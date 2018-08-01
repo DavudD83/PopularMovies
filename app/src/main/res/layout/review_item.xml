@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ci_review_author_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_account_circle_black_24dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_review_author_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
+        app:layout_constraintLeft_toRightOf="@+id/ci_review_author_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Davydov Dmytro" />
+
+    <TextView
+        android:id="@+id/tv_review_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:paddingStart="63dp"
+        android:textSize="12sp"
+
+        app:layout_constraintTop_toBottomOf="@id/tv_review_author_name"
+        tools:text="Like most of the reviews here, I agree that Guardians of the Galaxy was an absolute hoot. Guardians never takes itself too seriously which makes this movie a whole lot of fun.\r\n\r\nThe cast was perfectly chosen and even though two of the main five were CG, knowing who voiced and acted alongside them completely filled out these characters.\r\n\r\nGuardians of the Galaxy is one of those rare complete audience pleasers. Good fun for everyone!" />
+
+
+</android.support.constraint.ConstraintLayout>

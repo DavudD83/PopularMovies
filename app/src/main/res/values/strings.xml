@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="error_message">Some problem occurred</string>
+    <string name="empty_error_message">You have not loaded any film</string>
+    <string name="share_movie_title">share movie</string>
+    <string name="watch_trailer_button_title">Watch trailer</string>
+    <string name="movie_rating_title">Rating</string>
+    <string name="movie_overview_title">Overview</string>
+    <string name="sort_movie_by_rating">sort by rating</string>
+    <string name="sort_movie_by_popularity">sort by popularity</string>
+    <string name="reviews_title">Reviews</string>
+    <string name="release_day_title">Release day</string>
+    <string name="trailer_not_loaded_error">Trailer has not loaded yet</string>
+    <string name="share_error">You have not loaded movie</string>
+    <string name="show_favorite">show favorite movies</string>
+    <string name="reviews_empty_message">Movie does not have any review yet</string>
+    <string name="error_loading_reviews">Can not load reviews or trailer. May be its a problem with your internet.</string>
+</resources>
