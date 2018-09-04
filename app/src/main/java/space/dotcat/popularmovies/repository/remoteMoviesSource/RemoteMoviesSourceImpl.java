@@ -4,13 +4,10 @@ import android.arch.lifecycle.LiveData;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.functions.BiFunction;
 import space.dotcat.popularmovies.api.ApiService;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
@@ -22,6 +19,8 @@ import space.dotcat.popularmovies.model.VideoResponse;
 import space.dotcat.popularmovies.repository.MoviesRepository;
 
 public class RemoteMoviesSourceImpl implements MoviesRepository {
+
+    public final static String TRAILER_VIDEO_TYPE = "Trailer";
 
     private final ApiService mApiService;
 
@@ -38,16 +37,19 @@ public class RemoteMoviesSourceImpl implements MoviesRepository {
 
     @Override
     public Flowable<List<Movie>> getPopularMoviesSortedByRating() {
+        //is not supported operation
         return null;
     }
 
     @Override
     public Flowable<List<Movie>> getPopularMoviesSortedByPopularity() {
+        //is not supported operation
         return null;
     }
 
     @Override
     public Flowable<List<Movie>> getFavoriteMovies() {
+        //is not supported operation
         return null;
     }
 
@@ -63,11 +65,13 @@ public class RemoteMoviesSourceImpl implements MoviesRepository {
 
     @Override
     public Flowable<List<Movie>> reloadMovies() {
+        //is not supported operation
         return null;
     }
 
     @Override
     public LiveData<Movie> getMovieById(int movieId) {
+        //is not supported operation
         return null;
     }
 
@@ -77,7 +81,7 @@ public class RemoteMoviesSourceImpl implements MoviesRepository {
                 .toObservable()
                 .map(VideoResponse::getVideos)
                 .flatMap(Observable::fromIterable)
-                .filter(video -> video.getType().equals("Trailer"))
+                .filter(video -> video.getType().equals(TRAILER_VIDEO_TYPE))
                 .firstOrError();
     }
 
@@ -104,6 +108,7 @@ public class RemoteMoviesSourceImpl implements MoviesRepository {
 
     @Override
     public Completable updateMovie(Movie movie) {
+        //is not supported operation
         return null;
     }
 }

@@ -20,11 +20,9 @@ public class RxJavaTestRule implements TestRule {
                 RxAndroidPlugins.reset();
 
                 RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
-
                 RxJavaPlugins.setNewThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
 
                 RxAndroidPlugins.setMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
-
                 RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
 
                 try {

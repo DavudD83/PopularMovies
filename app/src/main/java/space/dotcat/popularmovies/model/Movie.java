@@ -63,7 +63,7 @@ public class Movie implements Parcelable {
         mOverview = overview;
         mReleaseDate = releaseDate;
 
-        mIsFavorite = false; //dy default favorite is false but can be changed via setter
+        mIsFavorite = false; //by default favorite is false but can be changed later by the user wish
     }
 
     @Ignore

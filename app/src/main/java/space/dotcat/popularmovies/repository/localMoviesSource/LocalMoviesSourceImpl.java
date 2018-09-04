@@ -57,6 +57,7 @@ public class LocalMoviesSourceImpl implements MoviesRepository {
 
     @Override
     public Flowable<List<Movie>> reloadMovies() {
+        //is not supported operation
         return null;
     }
 

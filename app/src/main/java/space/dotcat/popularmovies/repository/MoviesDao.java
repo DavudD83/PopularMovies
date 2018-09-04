@@ -21,7 +21,7 @@ import space.dotcat.popularmovies.model.Video;
 public interface MoviesDao {
 
     /**
-     * Load all movies from database ordered by popularity
+     * Load all movies from database
      *
      * @return observable flowable which contains list of movies
      */
@@ -29,8 +29,20 @@ public interface MoviesDao {
     @Query("Select * from Movies")
     Flowable<List<Movie>> getMovies();
 
+    /**
+     * Load all movies from database ordered by movie average rating descending
+     *
+     * @return observable flowable which contains list of movies ordered by movie average rating descending
+     */
+
     @Query("Select * from Movies order by movie_average_rating DESC")
     Flowable<List<Movie>> getMoviesSortedByRating();
+
+    /**
+     * Load all movies from database ordered by movie popularity descending
+     *
+     * @return observable flowable which contains list of movies ordered by movie popularity descending
+     */
 
     @Query("Select * from Movies order by movie_popularity DESC")
     Flowable<List<Movie>> getMoviesSortedByPopularity();
@@ -47,10 +59,10 @@ public interface MoviesDao {
     @Query("Select * from Movies where movie_id = :movieId")
     LiveData<Movie> getMovieById(int movieId);
 
-    @Query("Select * from Videos where video_id = :movieId")
+    @Query("Select * from Videos where movie_id = :movieId")
     Single<Video> getTrailer(int movieId);
 
-    @Query("Select * from Reviews where review_id = :movieId")
+    @Query("Select * from Reviews where mMovieId = :movieId")
     Single<List<Review>> getReviews(int movieId);
 
     @Transaction

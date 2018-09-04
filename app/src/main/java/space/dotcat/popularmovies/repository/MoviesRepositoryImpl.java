@@ -87,7 +87,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public Single<MovieExtraInfo> getTrailersAndReviews(int movieId) {
-        return mLocalDataSource.getTrailersAndReviews(movieId)
+            return mLocalDataSource.getTrailersAndReviews(movieId)
                 .onErrorResumeNext(throwable -> mRemoteDataSource.getTrailersAndReviews(movieId)
                         .doOnSuccess(movieExtraInfo -> {
             mLocalDataSource.addTrailerSync(movieExtraInfo.getTrailer());
