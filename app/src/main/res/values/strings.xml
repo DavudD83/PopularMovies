@@ -15,4 +15,14 @@
     <string name="show_favorite">show favorite movies</string>
     <string name="reviews_empty_message">Movie does not have any review yet</string>
     <string name="error_loading_reviews">Can not load reviews or trailer. May be its a problem with your internet.</string>
+    <string name="popular_movies_title">Popular</string>
+    <string name="ongoing_movies_title">Ongoing</string>
+    <string name="upcoming_movies_title">Upcoming</string>
+    <string name="favorite_movies_title">Favorite</string>
+    <string name="empty_popular_movies">There is no popular movies right now.</string>
+    <string name="empty_ongoing_movies">There is no ongoing movies right now</string>
+    <string name="empty_upcoming_movies">There is no upcoming movie right now</string>
+    <string name="error_loading_movies">Can not load movies. This is supposed to be a problem with your internet. Check your connection and retry</string>
+    <string name="empty_favorite_movies">You have not marked any movie as favorite yet</string>
+    <string name="sort_movie_by_date">sort by release date</string>
 </resources>

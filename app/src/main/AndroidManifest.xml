@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".screen.popularMovies.PopularMoviesActivity">
+        <activity android:name=".screen.movies.activity.MoviesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".screen.popularMovieDetails.MovieDetailsActivity">
+        <activity android:name=".screen.popularMovieDetails.activity.MovieDetailsActivity">
         </activity>
 
     </application>

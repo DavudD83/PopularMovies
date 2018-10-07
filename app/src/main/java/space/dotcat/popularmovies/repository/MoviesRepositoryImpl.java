@@ -13,60 +13,52 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.Video;
+import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSource;
+import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSource;
 
 public class MoviesRepositoryImpl implements MoviesRepository {
 
-    private MoviesRepository mLocalDataSource;
+    private LocalMoviesSource mLocalDataSource;
 
-    private MoviesRepository mRemoteDataSource;
+    private RemoteMoviesSource mRemoteDataSource;
 
     @Inject
-    public MoviesRepositoryImpl(MoviesRepository localDataSource,
-                                MoviesRepository remoteDataSource) {
+    public MoviesRepositoryImpl(LocalMoviesSource localDataSource,
+                                RemoteMoviesSource remoteDataSource) {
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;
     }
 
+
     @Override
-    public Flowable<List<Movie>> getPopularMovies() {
-        return mLocalDataSource.getPopularMovies();
+    public Flowable<List<Movie>> getMoviesWithFlag(String flag) {
+        return mLocalDataSource.getMoviesByFlag(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByRating() {
-        return mLocalDataSource.getPopularMoviesSortedByRating();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByRating(String flag) {
+        return mLocalDataSource.getMoviesWithFlagSortedByRating(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByPopularity() {
-        return mLocalDataSource.getPopularMoviesSortedByPopularity();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByPopularity(String flag) {
+        return mLocalDataSource.getMoviesWithFlagSortedByPopularity(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getFavoriteMovies() {
-        return mLocalDataSource.getFavoriteMovies();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByDate(String flag) {
+        return mLocalDataSource.getMoviesWithFlagSortedByReleaseDate(flag);
     }
 
     @Override
-    public void deleteAllMoviesSync() {
-        mLocalDataSource.deleteAllMoviesSync();
-    }
-
-    @Override
-    public void addMoviesSync(List<Movie> movies) {
-        mLocalDataSource.addMoviesSync(movies);
-    }
-
-    @Override
-    public Flowable<List<Movie>> reloadMovies() {
-        return mRemoteDataSource.getPopularMovies()
+    public Flowable<List<Movie>> reloadMoviesWithFlag(String flag) {
+        return mRemoteDataSource.reloadMoviesWithFlag(flag)
                 .doOnNext(movies -> {
-                    if(movies.isEmpty())
+                    if (movies.isEmpty()) {
                         return;
+                    }
 
-                    mLocalDataSource.deleteAllMoviesSync();
-
-                    mLocalDataSource.addMoviesSync(movies);
+                    mLocalDataSource.updateReloadedMoviesSync(movies, flag);
                 });
     }
 
@@ -94,16 +86,6 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
             mLocalDataSource.addReviewsSync(movieExtraInfo.getReviewList());
         }));
-    }
-
-    @Override
-    public void addTrailerSync(Video... videos) {
-        mLocalDataSource.addTrailerSync(videos);
-    }
-
-    @Override
-    public void addReviewsSync(List<Review> reviews) {
-        mLocalDataSource.addReviewsSync(reviews);
     }
 
     @Override

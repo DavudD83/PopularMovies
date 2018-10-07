@@ -7,8 +7,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import space.dotcat.popularmovies.repository.MoviesDatabase;
-import space.dotcat.popularmovies.repository.MoviesDao;
+import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDatabase;
 
 @Module
 public class DatabaseModule {

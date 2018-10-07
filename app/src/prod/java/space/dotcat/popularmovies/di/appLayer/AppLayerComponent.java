@@ -1,18 +1,32 @@
 package space.dotcat.popularmovies.di.appLayer;
 
+import android.app.Application;
+
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
-import space.dotcat.popularmovies.di.presentationLayer.MovieDetailsActivityComponent;
-import space.dotcat.popularmovies.di.presentationLayer.MovieDetailsActivityModule;
-import space.dotcat.popularmovies.di.presentationLayer.PopularMoviesActivityComponent;
-import space.dotcat.popularmovies.di.presentationLayer.PopularMoviesActivityModule;
+import dagger.android.AndroidInjectionModule;
+import space.dotcat.popularmovies.AppDelegate;
+import space.dotcat.popularmovies.di.presentationLayer.ActivityProviderModule;
 
-@Component(modules = {AppModule.class, DatabaseModule.class, NetworkModule.class, RepositoryModule.class})
+@Component(modules = {AndroidInjectionModule.class,
+        AppModule.class,
+        DatabaseModule.class,
+        NetworkModule.class,
+        RepositoryModule.class,
+        ActivityProviderModule.class})
 @Singleton
 public interface AppLayerComponent {
 
-    PopularMoviesActivityComponent plusPopularMoviesComponent(PopularMoviesActivityModule moviesActivityModule);
+    @Component.Builder
+    interface Builder {
 
-    MovieDetailsActivityComponent plusMovieDetailsComponent(MovieDetailsActivityModule movieDetailsActivityModule);
+        @BindsInstance
+        Builder addApplication(Application application);
+
+        AppLayerComponent build();
+    }
+
+    void inject(AppDelegate app);
 }

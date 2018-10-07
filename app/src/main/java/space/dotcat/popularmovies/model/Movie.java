@@ -4,13 +4,24 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import space.dotcat.popularmovies.repository.localMoviesSource.converters.DateConverter;
+
 @Entity(tableName = "Movies")
 public class Movie implements Parcelable {
+
+    public static final String FLAG_POPULAR = "movie_is_popular";
+
+    public static final String FLAG_ONGOING = "movie_is_ongoing";
+
+    public static final String FLAG_UPCOMING = "movie_is_upcoming";
+
+    public static final String FLAG_FAVORITE = "movie_is_favorite";
 
     @PrimaryKey
     @SerializedName("id")
@@ -43,9 +54,19 @@ public class Movie implements Parcelable {
 
     @SerializedName("release_date")
     @ColumnInfo(name = "movie_release_date")
+    @TypeConverters(value = DateConverter.class)
     private String mReleaseDate;
 
-    @ColumnInfo(name = "movie_is_favorite")
+    @ColumnInfo(name = FLAG_POPULAR)
+    private boolean mIsPopular;
+
+    @ColumnInfo(name = FLAG_ONGOING)
+    private boolean mIsOngoing;
+
+    @ColumnInfo(name = FLAG_UPCOMING)
+    private boolean mIsUpcoming;
+
+    @ColumnInfo(name = FLAG_FAVORITE)
     private boolean mIsFavorite;
 
     @Ignore
@@ -53,7 +74,8 @@ public class Movie implements Parcelable {
     }
 
     public Movie(int id, float vote_average, String title, float popularity, String poster_path,
-                 String original_language, String overview, String releaseDate) {
+                 String original_language, String overview, String releaseDate, boolean isPopular, boolean
+                         isOngoing, boolean isUpcoming) {
         mId = id;
         mVote_average = vote_average;
         mTitle = title;
@@ -62,6 +84,9 @@ public class Movie implements Parcelable {
         mOriginal_language = original_language;
         mOverview = overview;
         mReleaseDate = releaseDate;
+        mIsPopular = isPopular;
+        mIsOngoing = isOngoing;
+        mIsUpcoming = isUpcoming;
 
         mIsFavorite = false; //by default favorite is false but can be changed later by the user wish
     }
@@ -177,5 +202,29 @@ public class Movie implements Parcelable {
 
     public void setIsFavorite(boolean favorite) {
         mIsFavorite = favorite;
+    }
+
+    public boolean isPopular() {
+        return mIsPopular;
+    }
+
+    public void setPopular(boolean popular) {
+        mIsPopular = popular;
+    }
+
+    public boolean isOngoing() {
+        return mIsOngoing;
+    }
+
+    public void setOngoing(boolean ongoing) {
+        mIsOngoing = ongoing;
+    }
+
+    public boolean isUpcoming() {
+        return mIsUpcoming;
+    }
+
+    public void setUpcoming(boolean upcoming) {
+        mIsUpcoming = upcoming;
     }
 }

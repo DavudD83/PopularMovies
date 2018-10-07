@@ -3,6 +3,7 @@ package space.dotcat.popularmovies.di.appLayer;
 import android.content.Context;
 
 import javax.inject.Named;
+import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -17,9 +18,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import space.dotcat.popularmovies.BuildConfig;
 import space.dotcat.popularmovies.api.ApiService;
 import space.dotcat.popularmovies.api.AuthInterceptor;
+import space.dotcat.popularmovies.api.DiscoverMoviesInterceptor;
 import space.dotcat.popularmovies.api.RequestMatcher;
 import space.dotcat.popularmovies.api.RequestsInterceptor;
 import space.dotcat.popularmovies.di.appLayer.qualifiers.Auth;
+import space.dotcat.popularmovies.di.appLayer.qualifiers.Discovery;
 import space.dotcat.popularmovies.di.appLayer.qualifiers.Request;
 
 @Module
@@ -45,23 +48,32 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Auth
+    @Named("Auth")
     Interceptor provideAuthInterceptor() {
         return new AuthInterceptor();
     }
 
     @Provides
     @Singleton
-    @Request
+    @Named("Discover")
+    Interceptor provideDiscoverInterceptor() {
+        return new DiscoverMoviesInterceptor();
+    }
+
+    @Provides
+    @Singleton
+    @Named("Request")
     Interceptor provideRequestInterceptor(RequestMatcher requestMatcher) {
         return new RequestsInterceptor(requestMatcher);
     }
 
     @Provides
     @Singleton
-    OkHttpClient provideClient(@Auth Interceptor authInterceptor,@Request Interceptor requestInterceptor) {
+    OkHttpClient provideClient(@Named("Auth") Interceptor authInterceptor, @Named("Discover") Interceptor discoveryInterceptor,
+                               @Named("Request") Interceptor requestInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
+                .addInterceptor(discoveryInterceptor)
                 .addInterceptor(requestInterceptor)
                 .build();
     }

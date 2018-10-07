@@ -15,7 +15,7 @@ import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.model.Video;
-import space.dotcat.popularmovies.screen.popularMovieDetails.MovieDetailsViewModel;
+import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.PopularMovieDetailsViewModel;
 
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class MovieDetailsViewModelTest extends BaseViewModelTest<MovieDetailsViewModel> {
+public class MovieDetailsViewModelTest extends BaseViewModelTest<PopularMovieDetailsViewModel> {
 
     private static final int TEST_MOVIE_ID = 1;
 
@@ -49,8 +49,8 @@ public class MovieDetailsViewModelTest extends BaseViewModelTest<MovieDetailsVie
     private LiveData mMovie;
 
     @Override
-    protected MovieDetailsViewModel createViewModelForTesting() {
-        return new MovieDetailsViewModel(TEST_MOVIE_ID, mMoviesRepository);
+    protected PopularMovieDetailsViewModel createViewModelForTesting() {
+        return new PopularMovieDetailsViewModel(TEST_MOVIE_ID, mMoviesRepository);
     }
 
     @Override

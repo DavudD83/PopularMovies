@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mi_popular_movies"
+        android:title="@string/popular_movies_title"
+        android:icon="@drawable/popular_movies_icon"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/mi_ongoing_movies"
+        android:title="@string/ongoing_movies_title"
+        android:icon="@drawable/ongoing_movies_icon"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/mi_upcoming_movies"
+        android:title="@string/upcoming_movies_title"
+        android:icon="@drawable/upcoming_movies_icon"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/mi_favorite_movies"
+        android:title="@string/favorite_movies_title"
+        android:icon="@drawable/ic_favorite"
+        app:showAsAction="always"
+        />
+
+</menu>

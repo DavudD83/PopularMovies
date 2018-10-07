@@ -32,8 +32,13 @@ public class BaseViewModel extends ViewModel {
     }
 
     public void resetError() {
-        if(mError.getValue() != null) {
+        if (mError.getValue() != null) {
             mError.getValue().resetError();
         }
+    }
+
+    @Override
+    protected void onCleared() {
+        mDisposables.clear();
     }
 }

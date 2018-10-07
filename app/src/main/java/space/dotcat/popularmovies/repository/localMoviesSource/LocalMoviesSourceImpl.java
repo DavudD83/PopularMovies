@@ -13,10 +13,8 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.Video;
-import space.dotcat.popularmovies.repository.MoviesDao;
-import space.dotcat.popularmovies.repository.MoviesRepository;
 
-public class LocalMoviesSourceImpl implements MoviesRepository {
+public class LocalMoviesSourceImpl implements LocalMoviesSource {
 
     private MoviesDao mMoviesDao;
 
@@ -26,39 +24,28 @@ public class LocalMoviesSourceImpl implements MoviesRepository {
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMovies() {
-        return mMoviesDao.getMovies();
+    public Flowable<List<Movie>> getMoviesByFlag(String flag) {
+        return mMoviesDao.getMoviesByFlag(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByRating() {
-        return mMoviesDao.getMoviesSortedByRating();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByRating(String flag) {
+        return mMoviesDao.getMoviesWithFlagSortedByRating(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByPopularity() {
-        return mMoviesDao.getMoviesSortedByPopularity();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByPopularity(String flag) {
+        return mMoviesDao.getMoviesWithFlagSortedByPopularity(flag);
     }
 
     @Override
-    public Flowable<List<Movie>> getFavoriteMovies() {
-        return mMoviesDao.getFavoriteMovies();
-    }
-
-    @Override
-    public void deleteAllMoviesSync() {
-        mMoviesDao.deleteAllMovies();
+    public Flowable<List<Movie>> getMoviesWithFlagSortedByReleaseDate(String flag) {
+        return mMoviesDao.getMoviesWithFlagSortedByDate(flag);
     }
 
     @Override
     public void addMoviesSync(List<Movie> movies) {
         mMoviesDao.insertMovies(movies);
-    }
-
-    @Override
-    public Flowable<List<Movie>> reloadMovies() {
-        //is not supported operation
-        return null;
     }
 
     @Override
@@ -94,5 +81,15 @@ public class LocalMoviesSourceImpl implements MoviesRepository {
     @Override
     public Completable updateMovie(Movie movie) {
         return Completable.fromAction(() -> mMoviesDao.updateMovie(movie));
+    }
+
+    @Override
+    public void updateReloadedMoviesSync(List<Movie> movies, String flag) {
+        mMoviesDao.updateReloadedMovies(movies, flag);
+    }
+
+    @Override
+    public void deleteAllMovies() {
+        mMoviesDao.deleteAllMovies();
     }
 }

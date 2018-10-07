@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.reactivestreams.Publisher;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -21,8 +22,10 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.Video;
 import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSource;
 import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSourceImpl;
 import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSourceImpl;
+import space.dotcat.popularmovies.utils.TestUtils;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -30,60 +33,13 @@ import static junit.framework.Assert.assertNotNull;
 @RunWith(AndroidJUnit4.class)
 public class LocalSourceTest {
 
-    private static final List<Movie> MOVIES = createMovieList();
+    private static final List<Movie> MOVIES = TestUtils.createMovieList();
 
-    private static final List<Review> REVIEWS = createReviewList();
+    private static final List<Review> REVIEWS = TestUtils.createReviewList();
 
-    private static final List<Video> VIDEOS = createVideoList();
+    private static final List<Video> VIDEOS = TestUtils.createVideoList();
 
-    private static List<Video> createVideoList() {
-        Video video1 = new Video();
-        video1.setId("100");
-        video1.setMovieId(RemoteSourceTest.MOVIE_ID);
-        video1.setKey("key");
-
-        Video video2 = new Video();
-        video2.setId("200");
-        video2.setMovieId(RemoteSourceTest.MOVIE_ID);
-
-        Video video3 = new Video();
-        video3.setId("300");
-        video3.setMovieId(100);
-
-        return Arrays.asList(video1, video2, video3);
-    }
-
-    private static List<Review> createReviewList() {
-        Review review1 = new Review();
-        review1.setId("100");
-        review1.setMovieId(RemoteSourceTest.MOVIE_ID);
-
-        Review review2 = new Review();
-        review2.setId("200");
-        review2.setMovieId(RemoteSourceTest.MOVIE_ID);
-
-        Review review3 = new Review();
-        review3.setId("300");
-        review3.setMovieId(100);
-
-        return Arrays.asList(review1, review2, review3);
-    }
-
-    private static List<Movie> createMovieList() {
-        Movie movie1 = new Movie();
-        movie1.setId(100);
-
-        Movie movie2 = new Movie();
-        movie2.setId(RemoteSourceTest.MOVIE_ID);
-
-        Movie movie3 = new Movie();
-        movie3.setId(300);
-        movie3.setIsFavorite(true);
-
-        return Arrays.asList(movie1, movie2, movie3);
-    }
-
-    private MoviesRepository mLocalSource;
+    private LocalMoviesSource mLocalSource;
 
     @Rule
     public InstantTaskExecutorRule mTaskExecutorRule = new InstantTaskExecutorRule();
@@ -97,6 +53,8 @@ public class LocalSourceTest {
 
     @After
     public void clear() {
+        mLocalSource.deleteAllMovies();
+
         mLocalSource = null;
     }
 
@@ -107,42 +65,47 @@ public class LocalSourceTest {
 
     @Test
     public void testGetPopularMovies() {
-        mLocalSource.getPopularMovies()
+        mLocalSource.getMoviesByFlag(Movie.FLAG_POPULAR)
                 .flatMap(Flowable::fromIterable)
                 .test()
-                .assertValueCount(3)
-                .assertValueAt(0, movie-> movie.getId() == 100);
+                .assertValueCount(2)
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.POPULAR_MOVIE_ID &&
+                        movie.getTitle().equals(TestUtils.POPULAR_MOVIE_TITLE))
+                .assertValueAt(1, movie -> movie.getId() == TestUtils.POPULAR_MOVIE1_ID);
+    }
+
+    @Test
+    public void testGetUpcomingMovies() {
+        mLocalSource.getMoviesByFlag(Movie.FLAG_UPCOMING)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(1)
+                .assertValue(movie -> movie.getId() == TestUtils.UPCOMING_MOVIE_ID);
+    }
+
+    @Test
+    public void testGetOngoingMovies() {
+        mLocalSource.getMoviesByFlag(Movie.FLAG_ONGOING)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(1)
+                .assertValue(movie -> movie.getId() == TestUtils.ONGOING_MOVIE_ID);
     }
 
     @Test
     public void testGetFavoriteMovies() {
-        mLocalSource.getFavoriteMovies()
+        mLocalSource.getMoviesByFlag(Movie.FLAG_FAVORITE)
                 .flatMap(Flowable::fromIterable)
                 .test()
                 .assertValueCount(1)
-                .assertValue(movie-> movie.getId() == 300);
-    }
-
-    @Test
-    public void testDeleteAllMovies() {
-        mLocalSource.getPopularMovies()
-                .flatMap(Flowable::fromIterable)
-                .test()
-                .assertValueCount(3);
-
-        mLocalSource.deleteAllMoviesSync();
-
-        mLocalSource.getPopularMovies()
-                .flatMap(Flowable::fromIterable)
-                .test()
-                .assertValueCount(0);
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.ONGOING_MOVIE_ID && movie.isFavorite());
     }
 
     @Test
     public void testGetMovieById() {
-        Observer<Movie> movieObserver = movie -> assertEquals(RemoteSourceTest.MOVIE_ID, movie.getId());
+        Observer<Movie> movieObserver = movie -> assertEquals(TestUtils.UPCOMING_MOVIE_ID, movie.getId());
 
-        LiveData<Movie> movieLiveData = mLocalSource.getMovieById(RemoteSourceTest.MOVIE_ID);
+        LiveData<Movie> movieLiveData = mLocalSource.getMovieById(TestUtils.UPCOMING_MOVIE_ID);
 
         movieLiveData.observeForever(movieObserver);
 
@@ -155,7 +118,7 @@ public class LocalSourceTest {
 
         mLocalSource.addTrailerSync(VIDEOS.get(0), VIDEOS.get(1), VIDEOS.get(2));
 
-        mLocalSource.getTrailersAndReviews(RemoteSourceTest.MOVIE_ID)
+        mLocalSource.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
                 .test()
                 .assertValue(info-> info.getTrailer().getKey().equals("key")
                         && info.getReviewList().size() == 2);
@@ -163,22 +126,79 @@ public class LocalSourceTest {
 
     @Test
     public void testUpdateMovie() {
-        mLocalSource.getFavoriteMovies()
+        mLocalSource.getMoviesByFlag(Movie.FLAG_FAVORITE)
                 .flatMap(Flowable::fromIterable)
                 .test()
                 .assertValueCount(1);
 
-        Movie updatedMovie = MOVIES.get(0);
+        Movie updatedMovie = new Movie();
+        updatedMovie.setId(TestUtils.POPULAR_MOVIE_ID);
         updatedMovie.setIsFavorite(true);
+        updatedMovie.setPopular(true);
 
         mLocalSource.updateMovie(updatedMovie)
                 .test()
                 .assertNoErrors()
                 .assertComplete();
 
-        mLocalSource.getFavoriteMovies()
+        mLocalSource.getMoviesByFlag(Movie.FLAG_FAVORITE)
                 .flatMap(Flowable::fromIterable)
                 .test()
                 .assertValueCount(2);
+    }
+
+    @Test
+    public void updateReloadedMoviesWhenMovieAlreadyInDb() {
+        mLocalSource.getMoviesByFlag(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(2)
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.POPULAR_MOVIE_ID &&
+                        movie.getTitle().equals(TestUtils.POPULAR_MOVIE_TITLE))
+                .assertValueAt(1, movie -> movie.getId() == TestUtils.POPULAR_MOVIE1_ID);
+
+        Movie updatedPopularMovie = new Movie();
+        updatedPopularMovie.setId(TestUtils.POPULAR_MOVIE_ID);
+        updatedPopularMovie.setTitle(TestUtils.UPDATED_TITLE);
+        updatedPopularMovie.setPopular(true);
+
+        mLocalSource.updateReloadedMoviesSync(Collections.singletonList(updatedPopularMovie), Movie.FLAG_POPULAR);
+
+        mLocalSource.getMoviesByFlag(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(1)
+                .assertValueAt(0, movie-> movie.getId() == TestUtils.POPULAR_MOVIE_ID &&
+                        movie.getTitle().equals(TestUtils.UPDATED_TITLE));
+    }
+
+    @Test
+    public void testGetMoviesWithFlagSortedByRating() {
+        mLocalSource.getMoviesWithFlagSortedByRating(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(2)
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.POPULAR_MOVIE1_ID)
+                .assertValueAt(1, movie -> movie.getId() == TestUtils.POPULAR_MOVIE_ID);
+    }
+
+    @Test
+    public void testGetMoviesWithFlagSortedByPopularity() {
+        mLocalSource.getMoviesWithFlagSortedByPopularity(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(2)
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.POPULAR_MOVIE_ID)
+                .assertValueAt(1, movie -> movie.getId() == TestUtils.POPULAR_MOVIE1_ID);
+    }
+
+    @Test
+    public void testGetMoviesWithFlagSortedByDate() {
+        mLocalSource.getMoviesWithFlagSortedByReleaseDate(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(2)
+                .assertValueAt(0, movie -> movie.getId() == TestUtils.POPULAR_MOVIE1_ID)
+                .assertValueAt(1, movie -> movie.getId() == TestUtils.POPULAR_MOVIE_ID);
     }
 }

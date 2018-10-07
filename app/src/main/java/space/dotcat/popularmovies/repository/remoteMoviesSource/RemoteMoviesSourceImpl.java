@@ -1,10 +1,11 @@
 package space.dotcat.popularmovies.repository.remoteMoviesSource;
 
-import android.arch.lifecycle.LiveData;
+import android.support.annotation.VisibleForTesting;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -16,63 +17,91 @@ import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.ReviewResponse;
 import space.dotcat.popularmovies.model.Video;
 import space.dotcat.popularmovies.model.VideoResponse;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.utils.LoadMoviesFunction;
+import space.dotcat.popularmovies.utils.date.DateProvider;
 
-public class RemoteMoviesSourceImpl implements MoviesRepository {
+public class RemoteMoviesSourceImpl implements RemoteMoviesSource {
 
-    public final static String TRAILER_VIDEO_TYPE = "Trailer";
+    public static final String TRAILER_VIDEO_TYPE = "Trailer";
+
+    private static final String PRIMARY_RELEASE_DAY_GTE = "primary_release_date.gte";
+
+    private static final String PRIMARY_RELEASE_DAY_LTE = "primary_release_date.lte";
 
     private final ApiService mApiService;
 
-    public RemoteMoviesSourceImpl(ApiService apiService) {
+    private final DateProvider mDateProvider;
+
+    private HashMap<String, LoadMoviesFunction> mLoadMoviesFunctions;
+
+    public RemoteMoviesSourceImpl(ApiService apiService, DateProvider dateProvider) {
         mApiService = apiService;
+
+        mDateProvider = dateProvider;
+
+        mLoadMoviesFunctions = new HashMap<>();
+
+        mLoadMoviesFunctions.put(Movie.FLAG_POPULAR, this::reloadPopularMovies);
+        mLoadMoviesFunctions.put(Movie.FLAG_ONGOING, this::reloadOngoingMovies);
+        mLoadMoviesFunctions.put(Movie.FLAG_UPCOMING, this::reloadUpcomingMovies);
     }
 
-    @Override
-    public Flowable<List<Movie>> getPopularMovies() {
+    @VisibleForTesting
+    public Flowable<List<Movie>> reloadPopularMovies() {
         return mApiService.getPopularMovies()
                 .toFlowable()
-                .map(MovieResponse::getMovieList);
+                .map(MovieResponse::getMovieList)
+                .flatMap(Flowable::fromIterable)
+                .doOnNext(movie -> movie.setPopular(true))
+                .toList()
+                .toFlowable();
+    }
+
+    @VisibleForTesting
+    public Flowable<List<Movie>> reloadOngoingMovies() {
+        HashMap<String, String> complexQuery = new HashMap<>();
+
+        String startDate = mDateProvider.getStartMovieDateForOngoing();
+        String endDate = mDateProvider.getEndMovieDateForOngoing();
+
+        complexQuery.put(PRIMARY_RELEASE_DAY_GTE, startDate);
+        complexQuery.put(PRIMARY_RELEASE_DAY_LTE, endDate);
+
+        return mApiService.getOngoingMovies(complexQuery)
+                .toFlowable()
+                .map(MovieResponse::getMovieList)
+                .flatMap(Flowable::fromIterable)
+                .doOnNext(movie-> movie.setOngoing(true))
+                .toList()
+                .toFlowable();
+    }
+
+    @VisibleForTesting
+    public Flowable<List<Movie>> reloadUpcomingMovies() {
+        HashMap<String, String> complexQuery = new HashMap<>();
+
+        String startDate = mDateProvider.getStartMovieDateForUpcoming();
+        String endDate = mDateProvider.getEndMovieDateForUpcoming();
+
+        complexQuery.put(PRIMARY_RELEASE_DAY_GTE, startDate);
+        complexQuery.put(PRIMARY_RELEASE_DAY_LTE, endDate);
+
+        return mApiService.getUpcomingMovies(complexQuery)
+                .toFlowable()
+                .map(MovieResponse::getMovieList)
+                .flatMap(Flowable::fromIterable)
+                .doOnNext(movie -> movie.setUpcoming(true))
+                .toList()
+                .toFlowable();
     }
 
     @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByRating() {
-        //is not supported operation
-        return null;
-    }
+    public Flowable<List<Movie>> reloadMoviesWithFlag(String flag) {
+        if (!mLoadMoviesFunctions.containsKey(flag)) {
+            throw new IllegalArgumentException("Can not load movies. This flag of movies does not allowed or does not exist");
+        }
 
-    @Override
-    public Flowable<List<Movie>> getPopularMoviesSortedByPopularity() {
-        //is not supported operation
-        return null;
-    }
-
-    @Override
-    public Flowable<List<Movie>> getFavoriteMovies() {
-        //is not supported operation
-        return null;
-    }
-
-    @Override
-    public void deleteAllMoviesSync() {
-        //is not supported operation
-    }
-
-    @Override
-    public void addMoviesSync(List<Movie> movies) {
-        //is not supported operation
-    }
-
-    @Override
-    public Flowable<List<Movie>> reloadMovies() {
-        //is not supported operation
-        return null;
-    }
-
-    @Override
-    public LiveData<Movie> getMovieById(int movieId) {
-        //is not supported operation
-        return null;
+        return mLoadMoviesFunctions.get(flag).loadMovies();
     }
 
     @Override
@@ -94,21 +123,5 @@ public class RemoteMoviesSourceImpl implements MoviesRepository {
     @Override
     public Single<MovieExtraInfo> getTrailersAndReviews(int movieId) {
         return Single.zip(getTrailer(movieId), getReviews(movieId), MovieExtraInfo::new);
-    }
-
-    @Override
-    public void addTrailerSync(Video... videos) {
-        //is not supported operation
-    }
-
-    @Override
-    public void addReviewsSync(List<Review> reviews) {
-        //is not supported operation
-    }
-
-    @Override
-    public Completable updateMovie(Movie movie) {
-        //is not supported operation
-        return null;
     }
 }

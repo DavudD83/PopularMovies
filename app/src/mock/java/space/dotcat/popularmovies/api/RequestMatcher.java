@@ -2,7 +2,6 @@ package space.dotcat.popularmovies.api;
 
 import android.content.Context;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -11,12 +10,10 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
 
 public class RequestMatcher {
 
-    private static final String POPULAR_MOVIES = "popular";
+    private static final String POPULAR_MOVIES = "movie";
 
     private static final String VIDEOS = "videos";
 
@@ -31,7 +28,7 @@ public class RequestMatcher {
     public RequestMatcher(Context context) {
         mContext = context;
 
-        mAddresses.put(POPULAR_MOVIES, "popularMovies.json");
+        mAddresses.put(POPULAR_MOVIES, "movies.json");
         mAddresses.put(VIDEOS, "videos.json");
         mAddresses.put(REVIEWS, "reviews.json");
     }

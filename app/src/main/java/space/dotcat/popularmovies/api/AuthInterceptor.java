@@ -10,6 +10,7 @@ import space.dotcat.popularmovies.BuildConfig;
 
 public class AuthInterceptor implements Interceptor {
 
+
     public AuthInterceptor() {
     }
 
@@ -17,12 +18,12 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        HttpUrl urlWithKey = request.url().newBuilder()
+        HttpUrl httpUrlWithKey = request.url().newBuilder()
                 .addQueryParameter("api_key", BuildConfig.AUTH_KEY)
                 .build();
 
         Request requestWithKey = request.newBuilder()
-                .url(urlWithKey)
+                .url(httpUrlWithKey)
                 .build();
 
         return chain.proceed(requestWithKey);
