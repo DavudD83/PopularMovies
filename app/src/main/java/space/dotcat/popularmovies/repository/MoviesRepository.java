@@ -17,25 +17,15 @@ import space.dotcat.popularmovies.model.VideoResponse;
 
 public interface MoviesRepository {
 
-    /**
-     * Load popular movies via local or remote data source
-     *
-     * @return observable flowable which contains list of movies
-     */
+    Flowable<List<Movie>> getMoviesWithFlag(String flag);
 
-    Flowable<List<Movie>> getPopularMovies();
+    Flowable<List<Movie>> getMoviesWithFlagSortedByRating(String flag);
 
-    Flowable<List<Movie>> getPopularMoviesSortedByRating();
+    Flowable<List<Movie>> getMoviesWithFlagSortedByPopularity(String flag);
 
-    Flowable<List<Movie>> getPopularMoviesSortedByPopularity();
+    Flowable<List<Movie>> getMoviesWithFlagSortedByDate(String flag);
 
-    Flowable<List<Movie>> getFavoriteMovies();
-
-    void deleteAllMoviesSync();
-
-    void addMoviesSync(List<Movie> movies);
-
-    Flowable<List<Movie>> reloadMovies();
+    Flowable<List<Movie>> reloadMoviesWithFlag(String flag);
 
     LiveData<Movie> getMovieById(int movieId);
 
@@ -44,10 +34,6 @@ public interface MoviesRepository {
     Single<List<Review>> getReviews(int movieId);
 
     Single<MovieExtraInfo> getTrailersAndReviews(int movieId);
-
-    void addTrailerSync(Video ... videos);
-
-    void addReviewsSync(List<Review> reviews);
 
     Completable updateMovie(Movie movie);
 }

@@ -10,32 +10,32 @@ import space.dotcat.popularmovies.di.appLayer.qualifiers.Main;
 import space.dotcat.popularmovies.di.appLayer.qualifiers.Remote;
 import space.dotcat.popularmovies.repository.MoviesRepository;
 import space.dotcat.popularmovies.repository.MoviesRepositoryImpl;
+import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSource;
 import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSourceImpl;
-import space.dotcat.popularmovies.repository.MoviesDao;
+import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSource;
 import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSourceImpl;
+import space.dotcat.popularmovies.utils.date.DateProvider;
 
 @Module
 public class RepositoryModule {
 
     @Provides
     @Singleton
-    @Local
-    MoviesRepository provideLocalDataSource(MoviesDao moviesDao) {
+    LocalMoviesSource provideLocalDataSource(MoviesDao moviesDao) {
         return new LocalMoviesSourceImpl(moviesDao);
     }
 
     @Provides
     @Singleton
-    @Remote
-    MoviesRepository provideRemoteDataSource(ApiService apiService) {
-        return new RemoteMoviesSourceImpl(apiService);
+    RemoteMoviesSource provideRemoteDataSource(ApiService apiService, DateProvider dateProvider) {
+        return new RemoteMoviesSourceImpl(apiService, dateProvider);
     }
 
     @Provides
     @Singleton
-    @Main
-    MoviesRepository provideMoviesRepository(@Local MoviesRepository localDataSource,
-                                             @Remote MoviesRepository remoteDataSource) {
+    MoviesRepository provideMoviesRepository(LocalMoviesSource localDataSource,
+                                             RemoteMoviesSource remoteDataSource) {
         return new MoviesRepositoryImpl(localDataSource, remoteDataSource);
     }
 }

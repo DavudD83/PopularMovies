@@ -76,7 +76,7 @@ public class CheckableFloatingButton extends FloatingActionButton implements Che
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if(!(state instanceof CheckedSaveState)) {
+        if (!(state instanceof CheckedSaveState)) {
             super.onRestoreInstanceState(state);
 
             return;

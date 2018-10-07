@@ -1,22 +1,33 @@
 package space.dotcat.popularmovies.screen.base;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+import space.dotcat.popularmovies.R;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
     private static final String TAG = BaseActivity.class.getName();
 
-    private Snackbar mSnackbar;
+    @Inject
+    DispatchingAndroidInjector<Fragment> mFragmentDispatchingAndroidInjector;
 
-    private View.OnClickListener mErrorHandler;
+    private Unbinder mUnbinder;
+
+    protected FragmentManager mFragmentManager;
 
     @Nullable
     protected Toolbar mToolbar;
@@ -25,14 +36,33 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
 
-        ButterKnife.bind(this);
+        mUnbinder = ButterKnife.bind(this);
 
-        initDependencyGraph();
-
-        setupActionBar();
+        onSetupActionBar();
     }
 
-    protected void setupActionBar() {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+
+        super.onCreate(savedInstanceState);
+
+        mFragmentManager = getSupportFragmentManager();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mUnbinder.unbind();
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return mFragmentDispatchingAndroidInjector;
+    }
+
+    protected void onSetupActionBar() {
         if(mToolbar == null) {
             Log.d(TAG, "Toolbar is null. Can not set action bar");
             return;
@@ -50,41 +80,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         mToolbar = toolbar;
     }
 
-    protected abstract void initDependencyGraph();
-
-    protected void showError(Throwable throwable, View view, View.OnClickListener errorHandler) {
-        mSnackbar = Snackbar.make(view, throwable.getMessage(), Snackbar.LENGTH_INDEFINITE);
-
-        if (errorHandler == null) {
-            mSnackbar.setAction("Dismiss", v-> mSnackbar.dismiss());
-        } else {
-            mSnackbar.setAction("Try again", errorHandler);
-        }
-
-        mSnackbar.show();
-//        if(mSnackbar == null) {
-//            mSnackbar = Snackbar.make(view, throwable.getMessage(),
-//                    Snackbar.LENGTH_INDEFINITE);
-//
-//            if(errorHandler == null) {
-//                mSnackbar.setAction("Dismiss", v -> mSnackbar.dismiss());
-//            } else {
-//                mSnackbar.setAction("Try again", errorHandler);
-//            }
-//        }
-//
-//        mSnackbar.show();
-    }
-
-    protected void setErrorHandler(@StringRes int textId, View.OnClickListener handler) {
-        if(mSnackbar == null) {
-            return;
-        }
-
-        mSnackbar.setAction(textId, handler);
-    }
-
-    protected Snackbar getSnackbar() {
-        return mSnackbar;
+    protected void addFragment(int containerId, Fragment fragment) {
+        mFragmentManager.beginTransaction()
+                .replace(containerId, fragment)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in,
+                        android.R.anim.fade_out)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                .commit();
     }
 }
