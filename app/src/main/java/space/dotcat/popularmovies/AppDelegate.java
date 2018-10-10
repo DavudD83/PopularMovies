@@ -9,11 +9,7 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import space.dotcat.popularmovies.di.appLayer.AppLayerComponent;
-import space.dotcat.popularmovies.di.appLayer.AppModule;
 import space.dotcat.popularmovies.di.appLayer.DaggerAppLayerComponent;
-import space.dotcat.popularmovies.di.appLayer.DatabaseModule;
-import space.dotcat.popularmovies.di.appLayer.NetworkModule;
-import space.dotcat.popularmovies.di.appLayer.RepositoryModule;
 
 public class AppDelegate extends Application implements HasActivityInjector {
 

@@ -58,7 +58,12 @@ public abstract class BaseMoviesInternetViewModel extends BaseMoviesViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate(()-> mLoading.setValue(false))
                 .subscribe(
-                        movies -> {},
+                        movies -> {
+                            if (movies.isEmpty()) {
+                                mMovies.setValue(movies); // indicates that response from server was successful,
+                                // but there is no movie in response, and we need to show msg to user
+                            }
+                        },
 
                         throwable -> {
                             mLoading.setValue(false);
