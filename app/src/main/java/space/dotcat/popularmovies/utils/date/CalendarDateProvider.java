@@ -1,7 +1,6 @@
 package space.dotcat.popularmovies.utils.date;
 
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +18,7 @@ public class CalendarDateProvider implements DateProvider {
     @Override
     public String getStartMovieDateForUpcoming() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
 
         Date startDate = calendar.getTime();
 
@@ -29,7 +28,7 @@ public class CalendarDateProvider implements DateProvider {
     @Override
     public String getEndMovieDateForUpcoming() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 14);
+        calendar.add(Calendar.DAY_OF_YEAR, 14);
 
         Date futureDate = calendar.getTime();
 
@@ -40,7 +39,7 @@ public class CalendarDateProvider implements DateProvider {
     public String getStartMovieDateForOngoing() {
         Calendar calendar = Calendar.getInstance();
 
-        calendar.roll(Calendar.DATE, -14);
+        calendar.roll(Calendar.DAY_OF_YEAR, -14);
 
         Date startDate = calendar.getTime();
 

@@ -31,7 +31,9 @@ public class MoviesActivity extends BaseActivity implements BottomNavigationView
 
         setupNavigationView();
 
-        addFragment(R.id.fl_fragment_container, PopularMoviesFragment.create());
+        if (savedInstanceState == null) {
+            addFragment(R.id.fl_fragment_container, PopularMoviesFragment.create());
+        }
     }
 
     @Override
