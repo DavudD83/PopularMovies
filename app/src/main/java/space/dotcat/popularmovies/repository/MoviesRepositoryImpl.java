@@ -92,4 +92,9 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     public Completable updateMovie(Movie movie) {
         return mLocalDataSource.updateMovie(movie);
     }
+
+    @Override
+    public int deleteMoviesWithoutFlags() {
+        return mLocalDataSource.deleteMoviesWithoutFlags();
+    }
 }

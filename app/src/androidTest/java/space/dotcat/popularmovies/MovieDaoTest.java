@@ -11,6 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
@@ -25,6 +27,10 @@ public class MovieDaoTest {
 
     private static final String INSERTED_MOVIE_TITLE = "TITLE";
 
+    private static final List<Movie> MOVIES = TestUtils.createMovieList();
+
+    private static final List<Movie> MOVIES_WITHOUT_FLAGS = TestUtils.createMoviesWithoutFlags();
+
     private MoviesDao mMoviesDao;
 
     @Rule
@@ -34,7 +40,7 @@ public class MovieDaoTest {
     public void init() {
         mMoviesDao = AppDelegate.getInstance().getAppLayerComponent().getFakeMoviesDao();
 
-        mMoviesDao.insertMovies(TestUtils.createMovieList());
+        mMoviesDao.insertMovies(MOVIES);
     }
 
     @After
@@ -122,5 +128,19 @@ public class MovieDaoTest {
                 .test()
                 .assertValueCount(2)
                 .assertValueAt(1, movie -> movie.getTitle().equals(INSERTED_MOVIE_TITLE));
+    }
+
+    @Test
+    public void testDeleteAllMoviesWithoutFlags() {
+        mMoviesDao.insertMovies(MOVIES_WITHOUT_FLAGS);
+
+        int deletedMovies = mMoviesDao.deleteMoviesWithoutFlags();
+
+        assertEquals(MOVIES_WITHOUT_FLAGS.size(), deletedMovies);
+
+        mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(1);
     }
 }

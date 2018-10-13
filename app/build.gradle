@@ -49,14 +49,18 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
 
-    //Architecture components
+    //ViewModel & LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
+
+    //Room
     implementation "android.arch.persistence.room:runtime:1.1.1"
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
-
     androidTestImplementation "android.arch.core:core-testing:1.1.1"
-
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    //WorkManager
+    implementation "android.arch.work:work-runtime:1.0.0-alpha09"
+    androidTestImplementation "android.arch.work:work-testing:1.0.0-alpha09"
 
     //Dagger 2
     implementation 'com.google.dagger:dagger:2.16'

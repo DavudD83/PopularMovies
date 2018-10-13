@@ -158,6 +158,11 @@ public abstract class MoviesDao {
         }
     }
 
+    @Query("Delete from Movies where movie_is_popular = 0 and movie_is_ongoing = 0 " +
+            "and movie_is_upcoming = 0 and movie_is_favorite = 0")
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public abstract int deleteMoviesWithoutFlags();
+
     /**
      * Method for testing purposes.
      *
@@ -176,4 +181,8 @@ public abstract class MoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public abstract void insertMovies(List<Movie> movies);
+
+    @Query("Select count(movie_id) from Movies")
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public abstract int getMoviesCount();
 }

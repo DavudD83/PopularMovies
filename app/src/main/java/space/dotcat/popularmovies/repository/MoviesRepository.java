@@ -36,4 +36,6 @@ public interface MoviesRepository {
     Single<MovieExtraInfo> getTrailersAndReviews(int movieId);
 
     Completable updateMovie(Movie movie);
+
+    int deleteMoviesWithoutFlags();
 }

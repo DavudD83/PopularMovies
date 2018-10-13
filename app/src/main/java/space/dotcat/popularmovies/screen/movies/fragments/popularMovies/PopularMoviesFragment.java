@@ -1,6 +1,8 @@
 package space.dotcat.popularmovies.screen.movies.fragments.popularMovies;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,34 +19,6 @@ public class PopularMoviesFragment extends BaseMoviesSwipeRefreshFragment<Popula
 
     public PopularMoviesFragment() {
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        switch (id) {
-//            case R.id.mi_sort_by_popularity: {
-//                mViewModel.sortMoviesByPopularity();
-//
-//                return true;
-//            }
-//
-//            case R.id.mi_sort_by_rating: {
-//                mViewModel.sortMoviesByRating();
-//
-//                return true;
-//            }
-//
-//            default: {
-//                return false;
-//            }
-//        }
-//    }
 
     @Override
     protected PopularMoviesViewModel createViewModel() {

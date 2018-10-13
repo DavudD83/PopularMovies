@@ -91,4 +91,20 @@ public class TestUtils {
 
         return Arrays.asList(review1, review2, review3);
     }
+
+    public static List<Movie> createMoviesWithoutFlags() {
+        Movie popularMovie = new Movie();
+        popularMovie.setId(POPULAR_MOVIE_ID);
+        popularMovie.setTitle(POPULAR_MOVIE_TITLE);
+        popularMovie.setVote_average(POPULAR_MOVIE_VOTE_AVERAGE);
+        popularMovie.setPopularity(POPULAR_MOVIE_POPULARITY);
+        popularMovie.setReleaseDate("2018-10-14");
+
+        Movie ongoingMovie = new Movie();
+        ongoingMovie.setId(ONGOING_MOVIE_ID);
+
+        return Arrays.asList(popularMovie, ongoingMovie);
+
+
+    }
 }

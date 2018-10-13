@@ -10,13 +10,13 @@ import io.reactivex.schedulers.Schedulers;
 import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesInternetViewModel;
-import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesViewModel;
 
 public class OngoingMoviesViewModel extends BaseMoviesInternetViewModel {
 
-    public OngoingMoviesViewModel(MoviesRepository moviesRepository) {
-        super(moviesRepository);
+    public OngoingMoviesViewModel(MoviesRepository moviesRepository, Scheduler scheduler) {
+        super(moviesRepository, scheduler);
     }
 
     @Override
@@ -39,6 +39,12 @@ public class OngoingMoviesViewModel extends BaseMoviesInternetViewModel {
        reloadMovies(Movie.FLAG_ONGOING);
     }
 
+    @Override
+    protected void startSchedulingJob() {
+        mScheduler.startUpdatingOngoingMovies();
+    }
+
+
     public void getMoviesSortedByDate() {
         mDisposables.clear();
 
@@ -53,4 +59,5 @@ public class OngoingMoviesViewModel extends BaseMoviesInternetViewModel {
 
         mDisposables.add(disposable);
     }
+
 }

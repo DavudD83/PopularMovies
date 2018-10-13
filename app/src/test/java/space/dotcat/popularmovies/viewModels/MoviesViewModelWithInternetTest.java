@@ -1,6 +1,7 @@
 package space.dotcat.popularmovies.viewModels;
 
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,11 +10,11 @@ import java.util.List;
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesInternetViewModel;
 import space.dotcat.popularmovies.screen.movies.fragments.popularMovies.PopularMoviesViewModel;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMoviesViewModel> {
+
+    @Mock
+    Scheduler mScheduler;
 
     private final Throwable ERROR = new Throwable();
 
@@ -40,7 +44,7 @@ public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMo
 
     @Override
     protected PopularMoviesViewModel createViewModelForTesting() {
-        return new PopularMoviesViewModel(mMoviesRepository);
+        return new PopularMoviesViewModel(mMoviesRepository, mScheduler);
     }
 
     @Test

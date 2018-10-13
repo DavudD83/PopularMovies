@@ -92,4 +92,9 @@ public class LocalMoviesSourceImpl implements LocalMoviesSource {
     public void deleteAllMovies() {
         mMoviesDao.deleteAllMovies();
     }
+
+    @Override
+    public int deleteMoviesWithoutFlags() {
+        return mMoviesDao.deleteMoviesWithoutFlags();
+    }
 }

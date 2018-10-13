@@ -76,4 +76,6 @@ public interface LocalMoviesSource {
      */
 
     void deleteAllMovies();
+
+    int deleteMoviesWithoutFlags();
 }

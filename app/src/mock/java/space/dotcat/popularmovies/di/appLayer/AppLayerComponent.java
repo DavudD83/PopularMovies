@@ -10,13 +10,18 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import space.dotcat.popularmovies.AppDelegate;
 import space.dotcat.popularmovies.api.ApiService;
+import space.dotcat.popularmovies.di.appLayer.workers.WorkersModule;
 import space.dotcat.popularmovies.di.presentationLayer.ActivityProviderModule;
+import space.dotcat.popularmovies.di.workersInjection.WorkerInjectionModule;
 import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 
 @Component(modules = {AndroidInjectionModule.class,
+        WorkerInjectionModule.class,
         AppModule.class,
         DatabaseModule.class,
         NetworkModule.class,
+        WorkersModule.class,
         RepositoryModule.class,
         ActivityProviderModule.class})
 @Singleton
