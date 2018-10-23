@@ -15,7 +15,7 @@ import java.util.List;
 
 import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.screen.base.BaseViewModel;
 import space.dotcat.popularmovies.utils.RxJavaTestRule;
 

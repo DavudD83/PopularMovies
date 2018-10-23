@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers;
 import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.screen.base.BaseViewModel;
 
 public class PopularMovieDetailsViewModel extends BaseViewModel {

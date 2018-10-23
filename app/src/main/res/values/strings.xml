@@ -1,28 +1,50 @@
 <resources>
     <string name="app_name">PopularMovies</string>
+
     <string name="error_message">Some problem occurred</string>
     <string name="empty_error_message">You have not loaded any film</string>
+    <string name="trailer_not_loaded_error">Trailer has not loaded yet</string>
+    <string name="share_error">You have not loaded movie</string>
+    <string name="error_loading_reviews">Can not load reviews or trailer. May be its a problem with your internet</string>
+    <string name="reviews_empty_message">Movie does not have any review yet</string>
+
+
+    <string name="empty_popular_movies">There is no popular movies right now</string>
+    <string name="empty_ongoing_movies">There is no ongoing movies right now</string>
+    <string name="empty_upcoming_movies">There is no upcoming movie right now</string>
+
+    <string name="error_loading_movies">
+        Can not load movies. This is supposed to be a problem with your internet. Check your connection and retry</string>
+    <string name="empty_favorite_movies">You have not marked any movie as favorite yet</string>
+
+
     <string name="share_movie_title">share movie</string>
     <string name="watch_trailer_button_title">Watch trailer</string>
     <string name="movie_rating_title">Rating</string>
     <string name="movie_overview_title">Overview</string>
-    <string name="sort_movie_by_rating">sort by rating</string>
-    <string name="sort_movie_by_popularity">sort by popularity</string>
     <string name="reviews_title">Reviews</string>
     <string name="release_day_title">Release day</string>
-    <string name="trailer_not_loaded_error">Trailer has not loaded yet</string>
-    <string name="share_error">You have not loaded movie</string>
+
+
+    <string name="sort_movie_by_rating">Sort by rating</string>
+    <string name="sort_movie_by_popularity">Sort by popularity</string>
+    <string name="sort_movie_by_date">Sort by release date</string>
+
     <string name="show_favorite">show favorite movies</string>
-    <string name="reviews_empty_message">Movie does not have any review yet</string>
-    <string name="error_loading_reviews">Can not load reviews or trailer. May be its a problem with your internet.</string>
+
+
     <string name="popular_movies_title">Popular</string>
     <string name="ongoing_movies_title">Ongoing</string>
     <string name="upcoming_movies_title">Upcoming</string>
     <string name="favorite_movies_title">Favorite</string>
-    <string name="empty_popular_movies">There is no popular movies right now.</string>
-    <string name="empty_ongoing_movies">There is no ongoing movies right now</string>
-    <string name="empty_upcoming_movies">There is no upcoming movie right now</string>
-    <string name="error_loading_movies">Can not load movies. This is supposed to be a problem with your internet. Check your connection and retry</string>
-    <string name="empty_favorite_movies">You have not marked any movie as favorite yet</string>
-    <string name="sort_movie_by_date">sort by release date</string>
+
+
+    <string name="pref_notifications_state_title">Send notifications</string>
+    <string name="pref_is_notifications_enabled_key" translatable="false">IS_NOTIFICATIONS_ENABLED</string>
+    <string name="pref_period_updating_movies_title" translatable="false">Period of updating popular movies(in days)</string>
+    <string name="pref_period_of_updating_movies_key" translatable="false">period_of_updating_popular_movies</string>
+    <string name="pref_period_of_updating_summary">Select period(in days) of updating popular movies</string>
+
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_title">Settings</string>
 </resources>

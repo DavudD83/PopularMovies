@@ -2,8 +2,7 @@ package space.dotcat.popularmovies.di.presentationLayer;
 
 import dagger.Module;
 import dagger.Provides;
-import space.dotcat.popularmovies.di.appLayer.qualifiers.Main;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.PopularMovieDetailsFragment;
 import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.PopularMovieDetailsViewModelFactory;
 import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.ReviewsAdapter;

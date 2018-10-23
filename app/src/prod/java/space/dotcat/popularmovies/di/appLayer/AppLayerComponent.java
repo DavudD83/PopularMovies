@@ -12,10 +12,12 @@ import space.dotcat.popularmovies.di.appLayer.workers.WorkersModule;
 import space.dotcat.popularmovies.di.presentationLayer.ActivityProviderModule;
 import space.dotcat.popularmovies.di.workersInjection.WorkerInjectionModule;
 
-@Component(modules = {AndroidInjectionModule.class,
+@Component(modules = {
+        AndroidInjectionModule.class,
         WorkerInjectionModule.class,
         AppModule.class,
         DatabaseModule.class,
+        SharedPreferencesModule.class,
         NetworkModule.class,
         RepositoryModule.class,
         WorkersModule.class,

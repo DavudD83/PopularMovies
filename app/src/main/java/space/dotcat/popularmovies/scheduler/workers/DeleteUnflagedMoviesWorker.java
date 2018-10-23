@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import space.dotcat.popularmovies.di.workersInjection.WorkerInjection;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 
 
 public class DeleteUnflagedMoviesWorker extends Worker {

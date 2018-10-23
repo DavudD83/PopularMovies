@@ -25,8 +25,6 @@ public class WorkManagerScheduler implements Scheduler {
 
     private static final long UPDATE_ONGOING_REPEAT_INTERVAL = 1;
 
-    private static final long UPDATE_POPULAR_REPEAT_INTERVAL = 3;
-
     private static final String DELETE_UNFLAGED_MOVIES_WORK = "DELETING WORK";
 
     private static final String UPDATE_UPCOMING_MOVIES_WORK = "UPDATING UPCOMING MOVIES WORK";
@@ -88,14 +86,24 @@ public class WorkManagerScheduler implements Scheduler {
     }
 
     @Override
-    public LiveData<WorkStatus> startUpdatingPopularMovies() {
-        PeriodicWorkRequest updatePopularMovies = new PeriodicWorkRequest.Builder(UpdateMoviesWorker.class,
-                UPDATE_POPULAR_REPEAT_INTERVAL, TimeUnit.DAYS, 2, TimeUnit.DAYS)
-                .setConstraints(createConstraintsForUpdatingWork())
-                .setInputData(createInputDataForUpdatingMoviesWithFlag(Movie.FLAG_POPULAR))
-                .build();
+    public LiveData<WorkStatus> startUpdatingPopularMovies(long period_of_updating, long flex_interval,
+                                                           TimeUnit flex_time_unit) {
+        PeriodicWorkRequest updatePopularMovies = createPeriodicRequestForPopularMovies(period_of_updating,
+                flex_interval, flex_time_unit);
 
         mWorkManager.enqueueUniquePeriodicWork(UPDATE_POPULAR_MOVIES_WORK, ExistingPeriodicWorkPolicy.KEEP,
+                updatePopularMovies);
+
+        return mWorkManager.getStatusById(updatePopularMovies.getId());
+    }
+
+    @Override
+    public LiveData<WorkStatus> replaceUpdatingPopularMoviesWork(long period_of_updating, long flex_interval,
+                                                                 TimeUnit flex_time_unit) {
+        PeriodicWorkRequest updatePopularMovies = createPeriodicRequestForPopularMovies(period_of_updating,
+                flex_interval, flex_time_unit);
+
+        mWorkManager.enqueueUniquePeriodicWork(UPDATE_POPULAR_MOVIES_WORK, ExistingPeriodicWorkPolicy.REPLACE,
                 updatePopularMovies);
 
         return mWorkManager.getStatusById(updatePopularMovies.getId());
@@ -111,6 +119,15 @@ public class WorkManagerScheduler implements Scheduler {
     private Data createInputDataForUpdatingMoviesWithFlag(String flag) {
         return new Data.Builder()
                 .putString(UpdateMoviesWorker.FLAG_KEY, flag)
+                .build();
+    }
+
+    private PeriodicWorkRequest createPeriodicRequestForPopularMovies(long period_of_updating, long flex_interval,
+                                                                      TimeUnit flex_time_unit) {
+        return new PeriodicWorkRequest.Builder(UpdateMoviesWorker.class, period_of_updating, TimeUnit.DAYS,
+                flex_interval, flex_time_unit)
+                .setConstraints(createConstraintsForUpdatingWork())
+                .setInputData(createInputDataForUpdatingMoviesWithFlag(Movie.FLAG_POPULAR))
                 .build();
     }
 }

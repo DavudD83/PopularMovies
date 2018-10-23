@@ -2,6 +2,8 @@ package space.dotcat.popularmovies.scheduler;
 
 import android.arch.lifecycle.LiveData;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.work.WorkStatus;
 
 public interface Scheduler {
@@ -12,5 +14,9 @@ public interface Scheduler {
 
     LiveData<WorkStatus> startUpdatingOngoingMovies();
 
-    LiveData<WorkStatus> startUpdatingPopularMovies();
+    LiveData<WorkStatus> startUpdatingPopularMovies(long period_of_updating, long flex_interval,
+                                                    TimeUnit flex_time_unit);
+
+    LiveData<WorkStatus> replaceUpdatingPopularMoviesWork(long period_of_updating, long flex_interval,
+                                                          TimeUnit flex_time_unit);
 }

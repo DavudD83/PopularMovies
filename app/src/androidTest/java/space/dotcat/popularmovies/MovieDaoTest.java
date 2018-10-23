@@ -15,7 +15,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.MoviesDao;
 import space.dotcat.popularmovies.utils.TestUtils;
 
 import static org.junit.Assert.assertEquals;

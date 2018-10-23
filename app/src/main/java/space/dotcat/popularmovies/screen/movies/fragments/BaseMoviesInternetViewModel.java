@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.scheduler.Scheduler;
 
 public abstract class BaseMoviesInternetViewModel extends BaseMoviesViewModel {
@@ -24,7 +24,9 @@ public abstract class BaseMoviesInternetViewModel extends BaseMoviesViewModel {
         mScheduler = scheduler;
     }
 
-    protected abstract void startSchedulingJob();
+    public abstract void reloadMovies();
+
+    public abstract void startSchedulingJob();
 
     protected MutableLiveData<List<Movie>> getMovies(String flag) {
         if (mMovies == null) {
@@ -81,6 +83,4 @@ public abstract class BaseMoviesInternetViewModel extends BaseMoviesViewModel {
 
         mDisposables.add(disposable);
     }
-
-    public abstract void reloadMovies();
 }

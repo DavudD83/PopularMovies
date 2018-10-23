@@ -3,29 +3,41 @@ package space.dotcat.popularmovies.screen.movies.fragments.popularMovies;
 import android.arch.lifecycle.MutableLiveData;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import space.dotcat.popularmovies.model.Error;
+import space.dotcat.popularmovies.model.FlexInterval;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.MoviesRepository;
+import space.dotcat.popularmovies.repository.keyValueRepository.KeyValueRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesInternetViewModel;
+import space.dotcat.popularmovies.utils.updatePeriodCalculator.FlexIntervalCalculator;
 
 public class PopularMoviesViewModel extends BaseMoviesInternetViewModel {
 
-    public PopularMoviesViewModel(MoviesRepository moviesRepository, Scheduler scheduler) {
+    private KeyValueRepository mKeyValueRepository;
+
+    private FlexIntervalCalculator mFlexIntervalCalculator;
+
+    public PopularMoviesViewModel(MoviesRepository moviesRepository, Scheduler scheduler,
+                                  KeyValueRepository keyValueRepository, FlexIntervalCalculator flexIntervalCalculator) {
         super(moviesRepository, scheduler);
+
+        mFlexIntervalCalculator = flexIntervalCalculator;
+
+        mKeyValueRepository = keyValueRepository;
     }
 
     @Override
-    protected void startSchedulingJob() {
+    public void startSchedulingJob() {
         mScheduler.startDeletingUnflagedMovies();
 
-        mScheduler.startUpdatingPopularMovies();
+        long period_of_updating = mKeyValueRepository.getPeriodOfUpdatingPopularMovies();
+
+        FlexInterval flexInterval = mFlexIntervalCalculator.calculateFlexInterval(period_of_updating);
+
+        mScheduler.startUpdatingPopularMovies(period_of_updating, flexInterval.getFlexInterval(),
+                flexInterval.getTimeUnit());
     }
 
     @Override

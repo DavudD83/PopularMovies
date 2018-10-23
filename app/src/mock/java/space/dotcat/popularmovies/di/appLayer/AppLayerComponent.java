@@ -1,6 +1,7 @@
 package space.dotcat.popularmovies.di.appLayer;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import javax.inject.Singleton;
 
@@ -13,13 +14,16 @@ import space.dotcat.popularmovies.api.ApiService;
 import space.dotcat.popularmovies.di.appLayer.workers.WorkersModule;
 import space.dotcat.popularmovies.di.presentationLayer.ActivityProviderModule;
 import space.dotcat.popularmovies.di.workersInjection.WorkerInjectionModule;
-import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.repository.keyValueRepository.KeyValueRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.MoviesDao;
 import space.dotcat.popularmovies.scheduler.Scheduler;
 
-@Component(modules = {AndroidInjectionModule.class,
+@Component(modules = {
+        AndroidInjectionModule.class,
         WorkerInjectionModule.class,
         AppModule.class,
         DatabaseModule.class,
+        SharedPreferencesModule.class,
         NetworkModule.class,
         WorkersModule.class,
         RepositoryModule.class,
@@ -41,4 +45,8 @@ public interface AppLayerComponent {
     ApiService getFakeApiService();
 
     MoviesDao getFakeMoviesDao();
+
+    KeyValueRepository getFakeKeyValueRepository();
+
+    SharedPreferences getFakeSharedPreferences();
 }

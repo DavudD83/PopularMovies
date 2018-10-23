@@ -1,5 +1,7 @@
 package space.dotcat.popularmovies.screen.movies.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,7 +16,8 @@ import space.dotcat.popularmovies.screen.movies.fragments.favoriteMovies.Favorit
 import space.dotcat.popularmovies.screen.movies.fragments.ongoingMovies.OngoingMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.popularMovies.PopularMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.upcomingMovies.UpcomingMoviesFragment;
-import space.dotcat.popularmovies.utils.BottomNavigationUtils;
+import space.dotcat.popularmovies.screen.settings.SettingsActivity;
+import space.dotcat.popularmovies.utils.bottomNavigation.BottomNavigationUtils;
 
 public class MoviesActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -24,8 +27,14 @@ public class MoviesActivity extends BaseActivity implements BottomNavigationView
     @BindView(R.id.btv_navigation_view)
     BottomNavigationView mBottomNavigationView;
 
+    public static Intent getLaunchIntent(Context context) {
+        return new Intent(context, MoviesActivity.class);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popular_movies);
 
@@ -45,19 +54,26 @@ public class MoviesActivity extends BaseActivity implements BottomNavigationView
         super.onSetupActionBar();
     }
 
-    private void setupNavigationView() {
-        BottomNavigationUtils.removeShiftMode(mBottomNavigationView);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+        if (id == R.id.mi_settings) {
+            resetFragmentError();
+
+            startSettingsActivity();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        BaseFragment baseFragment = (BaseFragment) mFragmentManager.findFragmentById(R.id.fl_fragment_container);
-
-        baseFragment.resetError();
+        resetFragmentError();
 
         switch(id) {
             case R.id.mi_popular_movies: {
@@ -87,4 +103,21 @@ public class MoviesActivity extends BaseActivity implements BottomNavigationView
             }
         }
     }
+
+    private void startSettingsActivity() {
+        SettingsActivity.start(this);
+    }
+
+    private void resetFragmentError() {
+        BaseFragment baseFragment = (BaseFragment) mFragmentManager.findFragmentById(R.id.fl_fragment_container);
+
+        baseFragment.resetError();
+    }
+
+    private void setupNavigationView() {
+        BottomNavigationUtils.removeShiftMode(mBottomNavigationView);
+
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+    }
+
 }

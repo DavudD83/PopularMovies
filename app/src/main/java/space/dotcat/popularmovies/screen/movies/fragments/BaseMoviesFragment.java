@@ -120,6 +120,10 @@ public abstract class BaseMoviesFragment<VM extends BaseMoviesViewModel> extends
                 return true;
             }
 
+            case R.id.mi_settings: {
+
+            }
+
             default: {
                 return false;
             }

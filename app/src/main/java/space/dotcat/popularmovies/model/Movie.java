@@ -10,7 +10,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import space.dotcat.popularmovies.repository.localMoviesSource.converters.DateConverter;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.converters.DateConverter;
 
 @Entity(tableName = "Movies")
 public class Movie implements Parcelable {

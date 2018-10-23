@@ -2,6 +2,8 @@ package space.dotcat.popularmovies;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.After;
@@ -11,19 +13,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import androidx.work.State;
 import androidx.work.WorkManager;
 import androidx.work.WorkStatus;
 import androidx.work.test.TestDriver;
 import androidx.work.test.WorkManagerTestInitHelper;
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.localMoviesSource.MoviesDao;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.MoviesDao;
 import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.scheduler.WorkManagerScheduler;
 import space.dotcat.popularmovies.utils.TestUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class SchedulerTest {
@@ -126,9 +132,34 @@ public class SchedulerTest {
                 .test()
                 .assertValueCount(2);
 
-        LiveData<WorkStatus> info = mScheduler.startUpdatingPopularMovies();
+        LiveData<WorkStatus> info = mScheduler.startUpdatingPopularMovies(3, 2, TimeUnit.DAYS);
 
         info.observeForever(workStatus -> mTestDriver.setAllConstraintsMet(workStatus.getId()));
+
+        mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(4);
+    }
+
+    @Test
+    public void testReplaceUpdatingPopularMoviesWork() {
+        mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(0);
+
+        LiveData<WorkStatus> workStatusLiveData = mScheduler.startUpdatingPopularMovies(3,
+                2, TimeUnit.DAYS);
+
+        LiveData<WorkStatus> replaceWorkStatus = mScheduler.replaceUpdatingPopularMoviesWork(3,
+                2, TimeUnit.DAYS);
+
+        workStatusLiveData.observeForever(workStatus -> assertSame(State.CANCELLED, workStatus.getState()));
+
+        replaceWorkStatus.observeForever(workStatus -> {
+            mTestDriver.setAllConstraintsMet(workStatus.getId());
+        });
 
         mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
                 .flatMap(Flowable::fromIterable)
