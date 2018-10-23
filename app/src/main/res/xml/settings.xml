@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.preference.CheckBoxPreference
+        android:id="@+id/cbp_is_notifications_enabled"
+
+        android:title="@string/pref_notifications_state_title"
+        android:key="@string/pref_is_notifications_enabled_key"
+
+        android:summaryOn="Enabled"
+        android:summaryOff="Disabled"
+
+        android:defaultValue="false"
+        />
+
+    <android.support.v7.preference.ListPreference
+        android:id="@+id/lp_period_updating"
+
+        android:title="@string/pref_period_updating_movies_title"
+
+        android:key="@string/pref_period_of_updating_movies_key"
+
+        android:entries="@array/periods_of_updating"
+        android:entryValues="@array/periods_of_updating"
+
+        android:summary="@string/pref_period_of_updating_summary"
+
+        android:defaultValue="@integer/default_period_of_updating"
+        />
+
+</android.support.v7.preference.PreferenceScreen>

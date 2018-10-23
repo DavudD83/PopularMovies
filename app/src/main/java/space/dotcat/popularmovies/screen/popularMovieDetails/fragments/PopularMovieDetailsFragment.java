@@ -146,9 +146,7 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
                 return;
             }
 
-            showError(error.getThrowable().getMessage(), v-> {
-                mViewModel.resetError();
-            });
+            showError(error.getThrowable().getMessage(), v-> mViewModel.resetError());
         });
 
         mViewModel.getMovie().observe(this, this::showMovie);
@@ -162,18 +160,6 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
                 showReviews(reviewList);
             }
         });
-    }
-
-    private void showReviews(List<Review> reviews) {
-        mEmptyReviewsError.setVisibility(View.INVISIBLE);
-        mReviews.setVisibility(View.VISIBLE);
-
-        mReviewsAdapter.changeData(reviews);
-    }
-
-    private void showEmptyReviewsError() {
-        mReviews.setVisibility(View.INVISIBLE);
-        mEmptyReviewsError.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -227,6 +213,40 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
         return mWrapperLayout;
     }
 
+    public void updateMovie(boolean isFavorite) {
+        mViewModel.updateMovie(isFavorite);
+    }
+
+    public void watchTrailer() {
+        MovieExtraInfo movieExtraInfo = mViewModel.getTrailerAndReviews().getValue();
+
+        if (movieExtraInfo == null) {
+            Toast.makeText(getContext(), getString(R.string.trailer_not_loaded_error), Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        String path = BuildConfig.BASE_YOUTUBE_URL + movieExtraInfo.mTrailer.getKey();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void showReviews(List<Review> reviews) {
+        mEmptyReviewsError.setVisibility(View.INVISIBLE);
+        mReviews.setVisibility(View.VISIBLE);
+
+        mReviewsAdapter.changeData(reviews);
+    }
+
+    private void showEmptyReviewsError() {
+        mReviews.setVisibility(View.INVISIBLE);
+        mEmptyReviewsError.setVisibility(View.VISIBLE);
+    }
+
     private void showMovie(Movie movie) {
         mOnChangeToolbarTitle.changeToolbarTitle(movie.getTitle());
 
@@ -248,7 +268,6 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
         mReviews.setAdapter(mReviewsAdapter);
     }
 
-
     public interface OnChangeToolbarTitle {
         void changeToolbarTitle(String title);
     }
@@ -259,27 +278,5 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
 
     public interface OnChangeButtonFavoriteState {
         void changeFavoriteState(boolean state);
-    }
-
-    public void updateMovie(boolean isFavorite) {
-        mViewModel.updateMovie(isFavorite);
-    }
-
-    public void watchTrailer() {
-        MovieExtraInfo movieExtraInfo = mViewModel.getTrailerAndReviews().getValue();
-
-        if (movieExtraInfo == null) {
-            Toast.makeText(getContext(), getString(R.string.trailer_not_loaded_error), Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-
-        String path = BuildConfig.BASE_YOUTUBE_URL + movieExtraInfo.mTrailer.getKey();
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
-
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(intent);
-        }
     }
 }

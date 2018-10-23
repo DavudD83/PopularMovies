@@ -1,19 +1,24 @@
 package space.dotcat.popularmovies.viewModels;
 
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Error;
+import space.dotcat.popularmovies.model.FlexInterval;
 import space.dotcat.popularmovies.model.Movie;
+import space.dotcat.popularmovies.repository.keyValueRepository.KeyValueRepository;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesInternetViewModel;
 import space.dotcat.popularmovies.screen.movies.fragments.popularMovies.PopularMoviesViewModel;
+import space.dotcat.popularmovies.utils.updatePeriodCalculator.FlexIntervalCalculator;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -21,6 +26,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMoviesViewModel> {
+
+    private static final Long ONE_DAY_UPDATE_PERIOD = 1L;
+
+    private static final Long THREE_DAY_UPDATE_PERIOD = 3L;
+
+    private static final Long SEVEN_DAY_UPDATE_PERIOD = 7L;
+
+    @Mock
+    Scheduler mScheduler;
+
+    @Mock
+    KeyValueRepository mKeyValueRepository;
+
+    @Mock
+    FlexIntervalCalculator mFlexIntervalCalculator;
 
     private final Throwable ERROR = new Throwable();
 
@@ -40,7 +60,8 @@ public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMo
 
     @Override
     protected PopularMoviesViewModel createViewModelForTesting() {
-        return new PopularMoviesViewModel(mMoviesRepository);
+        return new PopularMoviesViewModel(mMoviesRepository, mScheduler, mKeyValueRepository,
+                mFlexIntervalCalculator);
     }
 
     @Test
@@ -144,6 +165,48 @@ public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMo
                 movies.get(0).getVote_average() == 20.0f &&
                 movies.get(1).getVote_average() == 12.0f &&
                 movies.get(2).getVote_average() == 3.0f));
+    }
+
+    @Test
+    public void testStartSchedulingJobWithThreeDayPref() {
+        when(mKeyValueRepository.getPeriodOfUpdatingPopularMovies()).thenReturn(THREE_DAY_UPDATE_PERIOD);
+
+        FlexInterval flexInterval = new FlexInterval(2, TimeUnit.DAYS);
+
+        when(mFlexIntervalCalculator.calculateFlexInterval(THREE_DAY_UPDATE_PERIOD)).thenReturn(flexInterval);
+
+        mViewModel.startSchedulingJob();
+
+        verify(mScheduler).startDeletingUnflagedMovies();
+        verify(mScheduler).startUpdatingPopularMovies(THREE_DAY_UPDATE_PERIOD, 2, TimeUnit.DAYS);
+    }
+
+    @Test
+    public void testStartSchedulingJobWithOneDayPref() {
+        when(mKeyValueRepository.getPeriodOfUpdatingPopularMovies()).thenReturn(ONE_DAY_UPDATE_PERIOD);
+
+        FlexInterval flexInterval = new FlexInterval(20, TimeUnit.HOURS);
+
+        when(mFlexIntervalCalculator.calculateFlexInterval(ONE_DAY_UPDATE_PERIOD)).thenReturn(flexInterval);
+
+        mViewModel.startSchedulingJob();
+
+        verify(mScheduler).startDeletingUnflagedMovies();
+        verify(mScheduler).startUpdatingPopularMovies(ONE_DAY_UPDATE_PERIOD, 20, TimeUnit.HOURS);
+    }
+
+    @Test
+    public void testStartSchedulingJobWithSevenDayPref() {
+        when(mKeyValueRepository.getPeriodOfUpdatingPopularMovies()).thenReturn(SEVEN_DAY_UPDATE_PERIOD);
+
+        FlexInterval flexInterval = new FlexInterval(6, TimeUnit.DAYS);
+
+        when(mFlexIntervalCalculator.calculateFlexInterval(SEVEN_DAY_UPDATE_PERIOD)).thenReturn(flexInterval);
+
+        mViewModel.startSchedulingJob();
+
+        verify(mScheduler).startDeletingUnflagedMovies();
+        verify(mScheduler).startUpdatingPopularMovies(SEVEN_DAY_UPDATE_PERIOD, 6, TimeUnit.DAYS);
     }
 
     private List<Movie> createSortedMovieList() {

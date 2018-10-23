@@ -5,13 +5,16 @@ import android.app.Application;
 
 import javax.inject.Inject;
 
+import androidx.work.Worker;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import space.dotcat.popularmovies.di.appLayer.AppLayerComponent;
 import space.dotcat.popularmovies.di.appLayer.DaggerAppLayerComponent;
+import space.dotcat.popularmovies.di.workersInjection.HasWorkerInjector;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 
-public class AppDelegate extends Application implements HasActivityInjector {
+public class AppDelegate extends Application implements HasActivityInjector, HasWorkerInjector {
 
     private static AppDelegate sInstance;
 
@@ -19,6 +22,9 @@ public class AppDelegate extends Application implements HasActivityInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> mActivityDispatchingAndroidInjector;
+
+    @Inject
+    DispatchingAndroidInjector<Worker> mWorkerDispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
@@ -48,5 +54,10 @@ public class AppDelegate extends Application implements HasActivityInjector {
     @Override
     public AndroidInjector<Activity> activityInjector() {
         return mActivityDispatchingAndroidInjector;
+    }
+
+    @Override
+    public AndroidInjector<Worker> hasWorkerInjector() {
+        return mWorkerDispatchingAndroidInjector;
     }
 }

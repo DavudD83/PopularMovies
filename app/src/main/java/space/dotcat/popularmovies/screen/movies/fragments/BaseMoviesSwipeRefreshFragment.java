@@ -18,6 +18,13 @@ public abstract class BaseMoviesSwipeRefreshFragment<VM extends BaseMoviesIntern
     @BindView(R.id.srl_update_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mViewModel.startSchedulingJob();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

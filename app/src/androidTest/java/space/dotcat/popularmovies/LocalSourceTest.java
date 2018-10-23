@@ -10,21 +10,16 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactivestreams.Publisher;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.functions.Function;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.Video;
-import space.dotcat.popularmovies.repository.MoviesRepository;
-import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSource;
-import space.dotcat.popularmovies.repository.localMoviesSource.LocalMoviesSourceImpl;
-import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSourceImpl;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.LocalMoviesSource;
+import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.LocalMoviesSourceImpl;
 import space.dotcat.popularmovies.utils.TestUtils;
 
 import static junit.framework.Assert.assertEquals;

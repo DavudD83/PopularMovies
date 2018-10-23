@@ -4,11 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import javax.inject.Inject;
-
-import space.dotcat.popularmovies.di.appLayer.qualifiers.Main;
-import space.dotcat.popularmovies.repository.MoviesRepository;
-import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.PopularMovieDetailsViewModel;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 
 public class PopularMovieDetailsViewModelFactory implements ViewModelProvider.Factory {
 

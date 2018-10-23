@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 
 import io.reactivex.Flowable;
 import space.dotcat.popularmovies.model.Movie;
-import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSource;
-import space.dotcat.popularmovies.repository.remoteMoviesSource.RemoteMoviesSourceImpl;
+import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSource;
+import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSourceImpl;
 import space.dotcat.popularmovies.utils.TestUtils;
 import space.dotcat.popularmovies.utils.date.CalendarDateProvider;
 import space.dotcat.popularmovies.utils.date.DateProvider;

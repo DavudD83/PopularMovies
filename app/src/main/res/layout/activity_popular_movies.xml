@@ -37,7 +37,7 @@
 
         app:menu="@menu/bottom_navigation_menu"
 
-        app:layout_behavior="space.dotcat.popularmovies.utils.BottomViewBehaviour"
+        app:layout_behavior="space.dotcat.popularmovies.utils.bottomNavigation.BottomViewBehaviour"
         >
 
     </android.support.design.widget.BottomNavigationView>

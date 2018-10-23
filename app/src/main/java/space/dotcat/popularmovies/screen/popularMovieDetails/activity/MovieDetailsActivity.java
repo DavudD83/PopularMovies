@@ -20,7 +20,7 @@ import space.dotcat.popularmovies.widget.CheckableFloatingButton;
 public class MovieDetailsActivity extends BaseActivity implements PopularMovieDetailsFragment.OnChangeToolbarTitle,
         PopularMovieDetailsFragment.PosterViewHolder, PopularMovieDetailsFragment.OnChangeButtonFavoriteState {
 
-    private static final String MOVIE_ID_KEY = "MOVIE_ID_KEY";
+    private static final String EXTRA_MOVIE_ID_KEY = "EXTRA_MOVIE_ID_KEY";
 
     @BindView(R.id.iv_movie_details_image)
     public ImageView mMovieImage;
@@ -40,7 +40,7 @@ public class MovieDetailsActivity extends BaseActivity implements PopularMovieDe
     public static void start(@NonNull Activity context, int movieId) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
 
-        intent.putExtra(MOVIE_ID_KEY, movieId);
+        intent.putExtra(EXTRA_MOVIE_ID_KEY, movieId);
 
         context.startActivity(intent);
     }
@@ -56,7 +56,7 @@ public class MovieDetailsActivity extends BaseActivity implements PopularMovieDe
 
         Intent intent = getIntent();
 
-        int movieId = intent.getIntExtra(MOVIE_ID_KEY, 0);
+        int movieId = intent.getIntExtra(EXTRA_MOVIE_ID_KEY, 0);
 
         if (savedInstanceState == null) {
             addFragment(R.id.fl_container, PopularMovieDetailsFragment.create(movieId));

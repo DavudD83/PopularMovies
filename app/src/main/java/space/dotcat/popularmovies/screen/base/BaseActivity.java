@@ -45,8 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity implements HasSuppo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AndroidInjection.inject(this);
 
-        setTheme(R.style.AppTheme);
-
         super.onCreate(savedInstanceState);
 
         mFragmentManager = getSupportFragmentManager();
@@ -87,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HasSuppo
                 .replace(containerId, fragment)
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in,
                         android.R.anim.fade_out)
-                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+//                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                 .commit();
     }
 }
