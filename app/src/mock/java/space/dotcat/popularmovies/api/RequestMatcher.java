@@ -1,6 +1,7 @@
 package space.dotcat.popularmovies.api;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -12,6 +13,10 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class RequestMatcher {
+
+    public static final String IS_ERROR = "IS_ERROR";
+
+    public static final String ERROR_MESSAGE = "Internet connection error";
 
     private static final String POPULAR_MOVIES = "movie";
 
@@ -25,8 +30,11 @@ public class RequestMatcher {
 
     private Context mContext;
 
-    public RequestMatcher(Context context) {
+    private SharedPreferences mSharedPreferences;
+
+    public RequestMatcher(Context context, SharedPreferences sharedPreferences) {
         mContext = context;
+        mSharedPreferences = sharedPreferences;
 
         mAddresses.put(POPULAR_MOVIES, "movies.json");
         mAddresses.put(VIDEOS, "videos.json");
@@ -38,6 +46,19 @@ public class RequestMatcher {
     }
 
     public Response getResponseForRequest(String requestPath, Request request) {
+        boolean is_error = mSharedPreferences.getBoolean(IS_ERROR, false);
+
+        if (is_error) {
+            Response.Builder builder = new Response.Builder()
+                    .code(500)
+                    .message(ERROR_MESSAGE)
+                    .protocol(Protocol.HTTP_1_1)
+                    .body(ResponseBody.create(MEDIA_TYPE, new byte[8192]))
+                    .request(request);
+
+            return builder.build();
+        }
+
         String assetName = mAddresses.get(requestPath);
 
         byte [] data = new byte[8192];

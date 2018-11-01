@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
@@ -54,7 +55,7 @@ public class LocalMoviesSourceImpl implements LocalMoviesSource {
     }
 
     @Override
-    public Single<Video> getTrailer(int movieId) {
+    public Single<List<Video>> getTrailer(int movieId) {
         return mMoviesDao.getTrailer(movieId);
     }
 
@@ -64,8 +65,19 @@ public class LocalMoviesSourceImpl implements LocalMoviesSource {
     }
 
     @Override
-    public Single<MovieExtraInfo> getTrailersAndReviews(int movieId) {
-        return mMoviesDao.getMovieExtraInfo(movieId);
+    public Flowable<MovieExtraInfo> getTrailersAndReviews(int movieId) {
+        return Flowable.combineLatest(getTrailer(movieId).toFlowable(), getReviews(movieId).toFlowable(),
+                (trailer, reviews)-> {
+            Video video;
+
+            if (trailer.size() <= 0) {
+                video = null;
+            } else {
+                video = trailer.get(0);
+            }
+
+            return new MovieExtraInfo(video, reviews);
+        });
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
@@ -39,11 +40,11 @@ public interface LocalMoviesSource {
 
     LiveData<Movie> getMovieById(int movieId);
 
-    Single<Video> getTrailer(int movieId);
+    Single<List<Video>> getTrailer(int movieId);
 
     Single<List<Review>> getReviews(int movieId);
 
-    Single<MovieExtraInfo> getTrailersAndReviews(int movieId);
+    Flowable<MovieExtraInfo> getTrailersAndReviews(int movieId);
 
     void addTrailerSync(Video ... videos);
 

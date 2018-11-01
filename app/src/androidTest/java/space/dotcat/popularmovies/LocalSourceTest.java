@@ -11,15 +11,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.model.Video;
 import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.LocalMoviesSource;
 import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.LocalMoviesSourceImpl;
+import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSource;
+import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSourceImpl;
 import space.dotcat.popularmovies.utils.TestUtils;
 
 import static junit.framework.Assert.assertEquals;
@@ -111,12 +115,46 @@ public class LocalSourceTest {
     public void testGetTrailerAndReviews() {
         mLocalSource.addReviewsSync(REVIEWS);
 
-        mLocalSource.addTrailerSync(VIDEOS.get(0), VIDEOS.get(1), VIDEOS.get(2));
+        for (Video v : VIDEOS) {
+            mLocalSource.addTrailerSync(v);
+        }
 
         mLocalSource.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
                 .test()
+                .assertValueCount(1)
                 .assertValue(info-> info.getTrailer().getKey().equals("key")
                         && info.getReviewList().size() == 2);
+    }
+
+    @Test
+    public void testGetTrailerAndReviewsWhenNoTrailer() {
+        mLocalSource.addReviewsSync(REVIEWS);
+
+        mLocalSource.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .test()
+                .assertValueCount(1)
+                .assertValue(info-> info.getTrailer() == null && info.getReviewList().size() == 2);
+    }
+
+    @Test
+    public void testGetTrailerAndReviewsWhenNoReviews() {
+        for (Video v : VIDEOS) {
+            mLocalSource.addTrailerSync(v);
+        }
+
+        mLocalSource.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .test()
+                .assertValueCount(1)
+                .assertValue(info-> info.getTrailer().getKey().equals("key")
+                        && info.getReviewList().size() == 0);
+    }
+
+    @Test
+    public void testGetTrailerAndReviewsWhenNoData() {
+        mLocalSource.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .test()
+                .assertValueCount(1)
+                .assertValue(info-> info.getReviewList().size() == 0 && info.getTrailer() == null);
     }
 
     @Test
@@ -140,6 +178,37 @@ public class LocalSourceTest {
                 .flatMap(Flowable::fromIterable)
                 .test()
                 .assertValueCount(2);
+    }
+
+    @Test
+    public void testDeleteMoviesAndCorrespondingReviewsAndVideos() {
+        mLocalSource.addMoviesSync(MOVIES);
+
+        mLocalSource.addReviewsSync(REVIEWS);
+
+        mLocalSource.getMoviesByFlag(Movie.FLAG_UPCOMING)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(1);
+
+        mLocalSource.getReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .toFlowable()
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(2);
+
+        mLocalSource.deleteAllMovies();
+
+        mLocalSource.getMoviesByFlag(Movie.FLAG_UPCOMING)
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(0);
+
+        mLocalSource.getReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .toFlowable()
+                .flatMap(Flowable::fromIterable)
+                .test()
+                .assertValueCount(0);
     }
 
     @Test

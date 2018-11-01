@@ -98,6 +98,18 @@ public class MoviesViewModelWithInternetTest extends BaseViewModelTest<PopularMo
     }
 
     @Test
+    public void testGetMoviesWhenServerReturnedZeroMovies() {
+        when(mMoviesRepository.getMoviesWithFlag(Movie.FLAG_POPULAR)).thenReturn(EMPTY_FLOWABLE);
+
+        when(mMoviesRepository.reloadMoviesWithFlag(Movie.FLAG_POPULAR)).thenReturn(EMPTY_FLOWABLE);
+
+        mViewModel.getMovies().observeForever(mMoviesObserver);
+
+        verify(mMoviesRepository).reloadMoviesWithFlag(Movie.FLAG_POPULAR);
+        verify(mMoviesObserver).onChanged(EMPTY_MOVIES);
+    }
+
+    @Test
     public void testGetMoviesFromDbWithError() {
         when(mMoviesRepository.getMoviesWithFlag(Movie.FLAG_POPULAR)).thenReturn(FLOWABLE_ERROR);
 

@@ -68,7 +68,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
-    public Single<Video> getTrailer(int movieId) {
+    public Single<List<Video>> getTrailer(int movieId) {
         return mLocalDataSource.getTrailer(movieId);
     }
 
@@ -78,14 +78,23 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
-    public Single<MovieExtraInfo> getTrailersAndReviews(int movieId) {
-            return mLocalDataSource.getTrailersAndReviews(movieId)
-                .onErrorResumeNext(throwable -> mRemoteDataSource.getTrailersAndReviews(movieId)
-                        .doOnSuccess(movieExtraInfo -> {
-            mLocalDataSource.addTrailerSync(movieExtraInfo.getTrailer());
+    public Flowable<MovieExtraInfo> getTrailersAndReviews(int movieId) {
+            return mRemoteDataSource.getTrailersAndReviews(movieId)
+                    .doOnSuccess(movieExtraInfo -> {
+                        if (movieExtraInfo.getReviewList().size() > 0) {
+                            mLocalDataSource.addReviewsSync(movieExtraInfo.getReviewList());
+                        }
 
-            mLocalDataSource.addReviewsSync(movieExtraInfo.getReviewList());
-        }));
+                        if (movieExtraInfo.getTrailer() != null) {
+                            mLocalDataSource.addTrailerSync(movieExtraInfo.getTrailer());
+                        }
+                    })
+                    .toFlowable()
+                    .onErrorResumeNext(error-> {
+                        Flowable<MovieExtraInfo> movieExtraInfoMaybe = mLocalDataSource.getTrailersAndReviews(movieId);
+
+                        return Flowable.mergeDelayError(movieExtraInfoMaybe, Flowable.error(error));
+                    });
     }
 
     @Override

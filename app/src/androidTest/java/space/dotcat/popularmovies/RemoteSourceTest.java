@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSource;
 import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSourceImpl;

@@ -1,4 +1,4 @@
-package space.dotcat.popularmovies.screen.popularMovieDetails.fragments;
+package space.dotcat.popularmovies.screen.movieDetails.fragments;
 
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;

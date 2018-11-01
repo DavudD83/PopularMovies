@@ -1,9 +1,9 @@
 package space.dotcat.popularmovies.di.appLayer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import javax.inject.Named;
-import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -21,9 +21,6 @@ import space.dotcat.popularmovies.api.AuthInterceptor;
 import space.dotcat.popularmovies.api.DiscoverMoviesInterceptor;
 import space.dotcat.popularmovies.api.RequestMatcher;
 import space.dotcat.popularmovies.api.RequestsInterceptor;
-import space.dotcat.popularmovies.di.appLayer.qualifiers.Auth;
-import space.dotcat.popularmovies.di.appLayer.qualifiers.Discovery;
-import space.dotcat.popularmovies.di.appLayer.qualifiers.Request;
 
 @Module
 public class NetworkModule {
@@ -42,8 +39,8 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    RequestMatcher provideRequestMatcher(Context context) {
-        return new RequestMatcher(context);
+    RequestMatcher provideRequestMatcher(Context context, SharedPreferences sharedPreferences) {
+        return new RequestMatcher(context, sharedPreferences);
     }
 
     @Provides

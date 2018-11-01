@@ -1,4 +1,4 @@
-package space.dotcat.popularmovies.screen.popularMovieDetails.fragments;
+package space.dotcat.popularmovies.screen.movieDetails.fragments;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -12,12 +12,13 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.screen.base.BaseViewModel;
+import space.dotcat.popularmovies.screen.movieDetails.Refreshable;
 
-public class PopularMovieDetailsViewModel extends BaseViewModel {
+public class MovieDetailsViewModel extends BaseViewModel {
 
-    private static final String TAG = PopularMovieDetailsViewModel.class.getName();
+    private static final String TAG = MovieDetailsViewModel.class.getName();
 
-    public static final int LOADING_REVIEWS_ERROR = 1;
+    public static final int LOADING_ERROR = 1;
 
     private int mMovieId;
 
@@ -27,7 +28,7 @@ public class PopularMovieDetailsViewModel extends BaseViewModel {
 
     private MoviesRepository mMoviesRepository;
 
-    public PopularMovieDetailsViewModel(int movieId, MoviesRepository moviesRepository) {
+    public MovieDetailsViewModel(int movieId, MoviesRepository moviesRepository) {
         mMovieId = movieId;
 
         mMoviesRepository = moviesRepository;
@@ -56,7 +57,7 @@ public class PopularMovieDetailsViewModel extends BaseViewModel {
     public void updateMovie(boolean favorite_state) {
         Movie movie = mMovieLiveData.getValue();
 
-        if(movie == null) {
+        if (movie == null) {
             Log.d(TAG, "Can not update null movie");
 
             return;
@@ -79,13 +80,13 @@ public class PopularMovieDetailsViewModel extends BaseViewModel {
     public void loadTrailersAndReviews() {
         Disposable d = mMoviesRepository.getTrailersAndReviews(mMovieId)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .doOnSubscribe(disposable -> mLoading.postValue(true))
                 .doAfterTerminate(()-> mLoading.postValue(false))
                 .subscribe(
                         movieExtraInfo -> mMovieExtraInfoLiveData.setValue(movieExtraInfo),
 
-                        throwable -> mError.setValue(Error.create(throwable, LOADING_REVIEWS_ERROR))
+                        throwable -> mError.setValue(Error.create(throwable, LOADING_ERROR))
                 );
 
         mDisposables.add(d);
