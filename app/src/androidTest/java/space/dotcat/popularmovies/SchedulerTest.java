@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.Nullable;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -143,7 +144,7 @@ public class SchedulerTest {
     }
 
     @Test
-    public void testReplaceUpdatingPopularMoviesWork() {
+    public void testReplaceUpdatingPopularMoviesWork() throws InterruptedException {
         mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
                 .flatMap(Flowable::fromIterable)
                 .test()
@@ -152,18 +153,26 @@ public class SchedulerTest {
         LiveData<WorkStatus> workStatusLiveData = mScheduler.startUpdatingPopularMovies(3,
                 2, TimeUnit.DAYS);
 
-        LiveData<WorkStatus> replaceWorkStatus = mScheduler.replaceUpdatingPopularMoviesWork(3,
+        workStatusLiveData.observeForever(info-> {
+            if (info != null) {
+                Log.i("TEST", info.getState().toString());
+            }
+        });
+
+        LiveData<WorkStatus> replaceWorkStatus = mScheduler.replaceUpdatingPopularMoviesWork(1,
                 2, TimeUnit.DAYS);
 
-        workStatusLiveData.observeForever(workStatus -> assertSame(State.CANCELLED, workStatus.getState()));
-
-        replaceWorkStatus.observeForever(workStatus -> {
-            mTestDriver.setAllConstraintsMet(workStatus.getId());
-        });
+        replaceWorkStatus.observeForever(workStatus -> mTestDriver.setAllConstraintsMet(workStatus.getId()));
 
         mMoviesDao.getMoviesByFlag(Movie.FLAG_POPULAR)
                 .flatMap(Flowable::fromIterable)
                 .test()
                 .assertValueCount(4);
+
+        mTestDriver.setAllConstraintsMet(replaceWorkStatus.getValue().getId());
+
+        WorkManager.getInstance()
+                .getStatusesForUniqueWork("UPDATING POPULAR MOVIES WORK")
+                .observeForever(list-> assertSame(1, list.size()));
     }
 }
