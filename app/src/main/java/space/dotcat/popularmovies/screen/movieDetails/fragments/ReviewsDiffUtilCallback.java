@@ -1,4 +1,4 @@
-package space.dotcat.popularmovies.screen.popularMovieDetails.fragments;
+package space.dotcat.popularmovies.screen.movieDetails.fragments;
 
 import java.util.List;
 

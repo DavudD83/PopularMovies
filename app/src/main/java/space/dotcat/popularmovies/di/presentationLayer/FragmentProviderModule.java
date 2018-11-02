@@ -6,11 +6,11 @@ import space.dotcat.popularmovies.di.presentationLayer.favoriteMovies.FavoriteMo
 import space.dotcat.popularmovies.di.presentationLayer.ongoingMovies.OngoingMoviesFragmentModule;
 import space.dotcat.popularmovies.di.presentationLayer.popularMovies.PopularMoviesFragmentModule;
 import space.dotcat.popularmovies.di.presentationLayer.upcomingMovies.UpcomingMoviesFragmentModule;
+import space.dotcat.popularmovies.screen.movieDetails.fragments.MovieDetailsFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.favoriteMovies.FavoriteMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.ongoingMovies.OngoingMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.popularMovies.PopularMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.upcomingMovies.UpcomingMoviesFragment;
-import space.dotcat.popularmovies.screen.popularMovieDetails.fragments.PopularMovieDetailsFragment;
 import space.dotcat.popularmovies.screen.settings.SettingsFragment;
 
 @Module
@@ -29,7 +29,7 @@ public abstract class FragmentProviderModule {
     abstract FavoriteMoviesFragment provideFavoriteMoviesFragment();
 
     @ContributesAndroidInjector(modules = PopularMovieDetailsFragmentModule.class)
-    abstract PopularMovieDetailsFragment providePopularMoviesDetailsFragment();
+    abstract MovieDetailsFragment providePopularMoviesDetailsFragment();
 
     @ContributesAndroidInjector(modules = SettingsFragmentModule.class)
     abstract SettingsFragment provideSettingsFragment();

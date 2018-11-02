@@ -29,7 +29,7 @@ import space.dotcat.popularmovies.model.Error;
 import space.dotcat.popularmovies.model.ImageSize;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.screen.base.BaseFragment;
-import space.dotcat.popularmovies.screen.popularMovieDetails.activity.MovieDetailsActivity;
+import space.dotcat.popularmovies.screen.movieDetails.activity.MovieDetailsActivity;
 
 public abstract class BaseMoviesFragment<VM extends BaseMoviesViewModel> extends BaseFragment<VM>
         implements MoviesAdapter.OnMovieClickListener {

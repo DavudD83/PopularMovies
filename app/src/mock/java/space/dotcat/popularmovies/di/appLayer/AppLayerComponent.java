@@ -15,6 +15,7 @@ import space.dotcat.popularmovies.di.appLayer.workers.WorkersModule;
 import space.dotcat.popularmovies.di.presentationLayer.ActivityProviderModule;
 import space.dotcat.popularmovies.di.workersInjection.WorkerInjectionModule;
 import space.dotcat.popularmovies.repository.keyValueRepository.KeyValueRepository;
+import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.MoviesDao;
 import space.dotcat.popularmovies.scheduler.Scheduler;
 
@@ -47,6 +48,8 @@ public interface AppLayerComponent {
     MoviesDao getFakeMoviesDao();
 
     KeyValueRepository getFakeKeyValueRepository();
+
+    MoviesRepository getFakeMoviesRepo();
 
     SharedPreferences getFakeSharedPreferences();
 }

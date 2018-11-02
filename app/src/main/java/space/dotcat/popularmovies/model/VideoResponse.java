@@ -26,8 +26,9 @@ public class VideoResponse {
     }
 
     public List<Video> getVideos() {
-        for(Video video : mVideos)
+        for (Video video : mVideos) {
             video.setMovieId(mMovieId);
+        }
 
         return mVideos;
     }

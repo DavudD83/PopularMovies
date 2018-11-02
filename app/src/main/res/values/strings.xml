@@ -5,9 +5,8 @@
     <string name="empty_error_message">You have not loaded any film</string>
     <string name="trailer_not_loaded_error">Trailer has not loaded yet</string>
     <string name="share_error">You have not loaded movie</string>
-    <string name="error_loading_reviews">Can not load reviews or trailer. May be its a problem with your internet</string>
+    <string name="error_reloading_extra_info">Can not load reviews or trailer. Maybe its a problem with your internet</string>
     <string name="reviews_empty_message">Movie does not have any review yet</string>
-
 
     <string name="empty_popular_movies">There is no popular movies right now</string>
     <string name="empty_ongoing_movies">There is no ongoing movies right now</string>
@@ -47,4 +46,6 @@
 
     <string name="settings_screen_title">Settings</string>
     <string name="settings_title">Settings</string>
+    <string name="empty_trailer">Movie does not have a trailer</string>
+    <string name="error_loading_reviews_trailer">Can not load new data</string>
 </resources>

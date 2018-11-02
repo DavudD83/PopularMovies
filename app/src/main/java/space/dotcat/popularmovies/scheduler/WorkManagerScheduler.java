@@ -100,6 +100,8 @@ public class WorkManagerScheduler implements Scheduler {
     @Override
     public LiveData<WorkStatus> replaceUpdatingPopularMoviesWork(long period_of_updating, long flex_interval,
                                                                  TimeUnit flex_time_unit) {
+        mWorkManager.cancelUniqueWork(UPDATE_POPULAR_MOVIES_WORK); //make sure that we have canceled previous work manually
+
         PeriodicWorkRequest updatePopularMovies = createPeriodicRequestForPopularMovies(period_of_updating,
                 flex_interval, flex_time_unit);
 

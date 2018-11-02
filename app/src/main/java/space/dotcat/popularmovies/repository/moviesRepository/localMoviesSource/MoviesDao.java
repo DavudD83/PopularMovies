@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
@@ -98,20 +99,22 @@ public abstract class MoviesDao {
     abstract LiveData<Movie> getMovieById(int movieId);
 
     @Query("Select * from Videos where movie_id = :movieId")
-    abstract Single<Video> getTrailer(int movieId);
+    abstract Single<List<Video>> getTrailer(int movieId);
 
     @Query("Select * from Reviews where mMovieId = :movieId")
     abstract Single<List<Review>> getReviews(int movieId);
 
-    @Transaction
-    @Query("Select * from Videos, Reviews where Videos.movie_id = :movieId and Reviews.mMovieId = :movieId")
-    abstract Single<MovieExtraInfo> getMovieExtraInfo(int movieId);
+//    @Transaction
+//    @Query("Select * from Videos, Reviews where Videos.movie_id = :movieId and Reviews.mMovieId = :movieId")
+//    abstract Flowable<MovieExtraInfo> getMovieExtraInfo(int movieId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insertTrailer(Video ... video);
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public abstract void insertTrailer(Video ... video);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract void insertReviews(List<Review> reviews);
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    public abstract void insertReviews(List<Review> reviews);
 
     @Update
     abstract void updateMovie(Movie movie);

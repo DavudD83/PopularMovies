@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
 
     android:fitsSystemWindows="true"
-    tools:context=".screen.popularMovieDetails.activity.MovieDetailsActivity">
+    tools:context=".screen.movieDetails.activity.MovieDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/abl_toolbar_wrapper"
@@ -50,24 +50,34 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nv_scroll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_refresh_layout"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
 
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
-       <FrameLayout
-           android:id="@+id/fl_container"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nv_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false">
 
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/fl_container"
 
-       </FrameLayout>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    </android.support.v4.widget.NestedScrollView>
+            </FrameLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
 
     <space.dotcat.popularmovies.widget.CheckableFloatingButton
         android:id="@+id/fb_favorite_film"

@@ -8,10 +8,10 @@ import java.util.List;
 
 public class MovieExtraInfo {
 
-    @Embedded
+//    @Embedded
     public Video mTrailer;
 
-    @Relation(entity = Review.class, entityColumn = "mMovieId", parentColumn = "movie_id")
+//    @Relation(entity = Review.class, entityColumn = "mMovieId", parentColumn = "movie_id")
     public List<Review> mReviewList;
 
     public MovieExtraInfo(Video trailer) {

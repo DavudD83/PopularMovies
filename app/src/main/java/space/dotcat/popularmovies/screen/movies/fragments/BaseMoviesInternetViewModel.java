@@ -40,6 +40,7 @@ public abstract class BaseMoviesInternetViewModel extends BaseMoviesViewModel {
                             movies -> {
                                 if (movies.isEmpty()) {
                                     reloadMovies();
+
                                     return;
                                 }
 

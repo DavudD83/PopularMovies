@@ -1,4 +1,4 @@
-package space.dotcat.popularmovies.screen.popularMovieDetails.fragments;
+package space.dotcat.popularmovies.screen.movieDetails.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,21 +34,26 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.screen.base.BaseFragment;
+import space.dotcat.popularmovies.screen.movieDetails.OnReloadFinished;
+import space.dotcat.popularmovies.screen.movieDetails.Refreshable;
 import space.dotcat.popularmovies.utils.image.ImageLoader;
 
 
-public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetailsViewModel> {
+public class MovieDetailsFragment extends BaseFragment<MovieDetailsViewModel> implements Refreshable {
 
-    public static final String MOVIE_ID_KEY = "MOVIE_ID_KEY";
+    public static final String EXTRA_MOVIE_ID_KEY = "EXTRA_MOVIE_ID_KEY";
 
     @Inject
-    PopularMovieDetailsViewModelFactory mPopularMovieDetailsViewModelFactory;
+    MovieDetailsViewModelFactory mPopularMovieDetailsViewModelFactory;
 
     @Inject
     ReviewsAdapter mReviewsAdapter;
 
     @Inject
     ImageLoader mImageLoader;
+
+//    @BindView(R.id.srl_refresh_layout)
+//    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @BindView(R.id.tv_movie_rating)
     TextView mMovieRating;
@@ -76,17 +82,21 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
 
     private OnChangeButtonFavoriteState mOnChangeButtonFavoriteState;
 
-    public static PopularMovieDetailsFragment create(int movieId) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(MOVIE_ID_KEY, movieId);
+    private OnReloadFinished mOnReloadFinished;
 
-        PopularMovieDetailsFragment popularMovieDetailsFragment = new PopularMovieDetailsFragment();
+    private Toast mToast = null;
+
+    public static MovieDetailsFragment create(int movieId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_MOVIE_ID_KEY, movieId);
+
+        MovieDetailsFragment popularMovieDetailsFragment = new MovieDetailsFragment();
         popularMovieDetailsFragment.setArguments(bundle);
 
         return popularMovieDetailsFragment;
     }
 
-    public PopularMovieDetailsFragment() {
+    public MovieDetailsFragment() {
     }
 
     @Override
@@ -99,6 +109,8 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
             mPosterViewHolder = (PosterViewHolder) context;
 
             mOnChangeButtonFavoriteState = (OnChangeButtonFavoriteState) context;
+
+            mOnReloadFinished = (OnReloadFinished) context;
         } catch (ClassCastException ex) {
             throw new IllegalArgumentException("Host activity has to implement appropriate interface. " + ex.getMessage());
         }
@@ -124,8 +136,16 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
 
         setupLoadingIndicator(mProgressBar);
 
+//        setupSwipeRefreshLayout();
+
         return view;
     }
+
+//    private void setupSwipeRefreshLayout() {
+//        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+//
+//        mSwipeRefreshLayout.setOnRefreshListener(this);
+//    }
 
     @Override
     public void onResume() {
@@ -136,28 +156,22 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
                 return;
             }
 
-            if (error.getErrorCode() == PopularMovieDetailsViewModel.LOADING_REVIEWS_ERROR) {
-                showError(getString(R.string.error_loading_reviews), v-> {
-                    mViewModel.loadTrailersAndReviews();
-
-                    mViewModel.resetError();
-                });
+            if (error.getErrorCode() == MovieDetailsViewModel.LOADING_ERROR) {
+                showToast(getString(R.string.error_loading_reviews_trailer), Toast.LENGTH_SHORT);
 
                 return;
             }
 
-            showError(error.getThrowable().getMessage(), v-> mViewModel.resetError());
+            super.showError(error.getThrowable().getMessage(), v-> mViewModel.resetError());
         });
 
         mViewModel.getMovie().observe(this, this::showMovie);
 
-        mViewModel.getTrailerAndReviews().observe(this, movieExtraInfo -> {
-            List<Review> reviewList = movieExtraInfo.getReviewList();
-
-            if(reviewList == null || reviewList.isEmpty()) {
-                showEmptyReviewsError();
+        mViewModel.getTrailerAndReviews().observe(this, result -> {
+            if (result.getReviewList().size() > 0) {
+                showReviews(result.getReviewList());
             } else {
-                showReviews(reviewList);
+                showEmptyReviewsError();
             }
         });
     }
@@ -176,7 +190,8 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
                 Movie movie = mViewModel.getMovie().getValue();
 
                 if (movie == null) {
-                    Toast.makeText(getContext(), "Movie has not been loaded yet. So you can not share it yet.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Movie has not been loaded yet. " +
+                            "So you can not share it yet.", Toast.LENGTH_SHORT).show();
 
                     return false;
                 }
@@ -203,15 +218,22 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
     }
 
     @Override
-    protected PopularMovieDetailsViewModel createViewModel() {
+    protected MovieDetailsViewModel createViewModel() {
         return ViewModelProviders.of(this, mPopularMovieDetailsViewModelFactory)
-                .get(PopularMovieDetailsViewModel.class);
+                .get(MovieDetailsViewModel.class);
     }
 
     @Override
     protected View getContainerForSnackbar() {
         return mWrapperLayout;
     }
+
+//    @Override
+//    public void onRefresh() {
+//        mViewModel.loadTrailersAndReviews();
+//        mSwipeRefreshLayout.setRefreshing(false);
+//    }
+
 
     public void updateMovie(boolean isFavorite) {
         mViewModel.updateMovie(isFavorite);
@@ -221,17 +243,21 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
         MovieExtraInfo movieExtraInfo = mViewModel.getTrailerAndReviews().getValue();
 
         if (movieExtraInfo == null) {
-            Toast.makeText(getContext(), getString(R.string.trailer_not_loaded_error), Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.trailer_not_loaded_error), Toast.LENGTH_SHORT);
 
             return;
         }
 
-        String path = BuildConfig.BASE_YOUTUBE_URL + movieExtraInfo.mTrailer.getKey();
+        if (movieExtraInfo.getTrailer() != null) {
+            String path = BuildConfig.BASE_YOUTUBE_URL + movieExtraInfo.getTrailer().getKey();
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
 
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(intent);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
+        } else {
+            showToast(getString(R.string.empty_trailer), Toast.LENGTH_SHORT);
         }
     }
 
@@ -266,6 +292,23 @@ public class PopularMovieDetailsFragment extends BaseFragment<PopularMovieDetail
     private void setupReviewsRecycler() {
         mReviews.setLayoutManager(new LinearLayoutManager(getContext()));
         mReviews.setAdapter(mReviewsAdapter);
+    }
+
+    private void showToast(String message, int lengthLong) {
+        if (mToast != null) {
+            mToast.cancel();
+        }
+
+        mToast = Toast.makeText(getContext(), message, lengthLong);
+
+        mToast.show();
+    }
+
+    @Override
+    public void reloadData() {
+        mViewModel.loadTrailersAndReviews();
+
+        mOnReloadFinished.reloadFinished();
     }
 
     public interface OnChangeToolbarTitle {
