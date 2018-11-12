@@ -2,7 +2,6 @@ package space.dotcat.popularmovies.screen.movieDetails.fragments;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -12,11 +11,9 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.model.MovieExtraInfo;
 import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.screen.base.BaseViewModel;
-import space.dotcat.popularmovies.screen.movieDetails.Refreshable;
+import timber.log.Timber;
 
 public class MovieDetailsViewModel extends BaseViewModel {
-
-    private static final String TAG = MovieDetailsViewModel.class.getName();
 
     public static final int LOADING_ERROR = 1;
 
@@ -58,7 +55,7 @@ public class MovieDetailsViewModel extends BaseViewModel {
         Movie movie = mMovieLiveData.getValue();
 
         if (movie == null) {
-            Log.d(TAG, "Can not update null movie");
+            Timber.d("Can not update null movie");
 
             return;
         }

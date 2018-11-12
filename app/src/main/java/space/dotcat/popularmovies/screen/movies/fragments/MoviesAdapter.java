@@ -5,6 +5,7 @@ import android.support.v7.util.DiffUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -21,14 +22,6 @@ public class MoviesAdapter extends BaseRecyclerAdapter<Movie, MovieViewHolder> {
     private ImageSize mImageSize;
 
     private OnMovieClickListener mOnMovieClickListener;
-
-    private View.OnClickListener mOnImageClickListener = view -> {
-        Movie movie = (Movie) view.getTag();
-
-        int movieId = movie.getId();
-
-        mOnMovieClickListener.onMovieClick(movieId);
-    };
 
     public MoviesAdapter(ImageLoader imageLoader, ImageSize imageSize, OnMovieClickListener onMovieClickListener) {
         super();
@@ -49,7 +42,14 @@ public class MoviesAdapter extends BaseRecyclerAdapter<Movie, MovieViewHolder> {
 
         MovieViewHolder movieViewHolder = new MovieViewHolder(view, mImageSize, mImageLoader);
 
-        movieViewHolder.itemView.setOnClickListener(mOnImageClickListener);
+        movieViewHolder.itemView.setOnClickListener(v-> {
+            Movie movie = (Movie) v.getTag();
+
+            int movieId = movie.getId();
+            ImageView moviePoster = movieViewHolder.mMoviePoster;
+
+            mOnMovieClickListener.onMovieClick(movieId, moviePoster);
+        });
 
         return movieViewHolder;
     }
@@ -60,6 +60,6 @@ public class MoviesAdapter extends BaseRecyclerAdapter<Movie, MovieViewHolder> {
     }
 
     public interface OnMovieClickListener {
-        void onMovieClick(int movieId);
+        void onMovieClick(int movieId, ImageView moviePoster);
     }
 }

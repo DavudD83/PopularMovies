@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">MovieDiscover</string>
 
     <string name="error_message">Some problem occurred</string>
     <string name="empty_error_message">You have not loaded any film</string>
@@ -48,4 +48,5 @@
     <string name="settings_title">Settings</string>
     <string name="empty_trailer">Movie does not have a trailer</string>
     <string name="error_loading_reviews_trailer">Can not load new data</string>
+    <string name="movie_poster_transition_name">movie_poster_transition</string>
 </resources>

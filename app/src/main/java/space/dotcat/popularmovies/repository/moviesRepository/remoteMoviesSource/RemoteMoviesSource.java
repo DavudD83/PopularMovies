@@ -13,7 +13,7 @@ public interface RemoteMoviesSource {
 
     Flowable<List<Movie>> reloadMoviesWithFlag(String flag);
 
-    Single<Video> getTrailer(int movieId);
+    Single<List<Video>> getTrailer(int movieId);
 
     Single<List<Review>> getReviews(int movieId);
 

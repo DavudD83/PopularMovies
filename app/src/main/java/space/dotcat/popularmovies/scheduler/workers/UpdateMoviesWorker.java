@@ -14,12 +14,11 @@ import space.dotcat.popularmovies.model.Movie;
 import space.dotcat.popularmovies.notification.NotificationHandler;
 import space.dotcat.popularmovies.repository.keyValueRepository.KeyValueRepository;
 import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
+import timber.log.Timber;
 
 public class UpdateMoviesWorker extends Worker {
 
     public static final String FLAG_KEY = "FLAG";
-
-    private static final String TAG = UpdateMoviesWorker.class.getName();
 
     @Inject
     MoviesRepository mMoviesRepository;
@@ -44,7 +43,7 @@ public class UpdateMoviesWorker extends Worker {
         Result [] results = new Result[1];
 
         Disposable disposable = mMoviesRepository.reloadMoviesWithFlag(flag)
-                .doOnSubscribe(subscription -> Log.i(TAG, "Starting updating movies with flag " + flag))
+                .doOnSubscribe(subscription -> Timber.i("Starting updating movies with flag %s", flag))
                 .subscribe(
                         movies -> {
                             results[0] = Result.SUCCESS;
@@ -53,13 +52,13 @@ public class UpdateMoviesWorker extends Worker {
                                 maybeNotify();
                             }
 
-                            Log.i(TAG, "Successfully reloaded " + movies.size() + " movies with flag " + flag);
+                            Timber.i("Successfully reloaded " + movies.size() + " movies with flag " + flag);
                         },
 
                         throwable -> {
                             results[0] = Result.RETRY;
 
-                            Log.i(TAG, "Error " + throwable.getMessage() +
+                            Timber.i("Error " + throwable.getMessage() +
                                     " has happened during reloading movies with flag" + flag);
                         }
                 );

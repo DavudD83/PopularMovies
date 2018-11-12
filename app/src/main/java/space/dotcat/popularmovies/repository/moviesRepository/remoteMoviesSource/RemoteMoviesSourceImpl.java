@@ -104,13 +104,13 @@ public class RemoteMoviesSourceImpl implements RemoteMoviesSource {
     }
 
     @Override
-    public Single<Video> getTrailer(int movieId) {
+    public Single<List<Video>> getTrailer(int movieId) {
         return mApiService.getVideos(movieId)
                 .toObservable()
                 .map(VideoResponse::getVideos)
                 .flatMap(Observable::fromIterable)
                 .filter(video -> video.getType().equals(TRAILER_VIDEO_TYPE))
-                .firstOrError();
+                .toList();
     }
 
     @Override
@@ -121,6 +121,14 @@ public class RemoteMoviesSourceImpl implements RemoteMoviesSource {
 
     @Override
     public Single<MovieExtraInfo> getTrailersAndReviews(int movieId) {
-        return Single.zip(getTrailer(movieId), getReviews(movieId), MovieExtraInfo::new);
+        return Single.zip(getTrailer(movieId), getReviews(movieId), (trailers, reviews) -> {
+            Video video = null;
+
+            if (trailers.size() > 0) {
+                video = trailers.get(0);
+            }
+
+            return new MovieExtraInfo(video, reviews);
+        });
     }
 }

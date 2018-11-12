@@ -36,7 +36,7 @@ public class MoviesActivity extends BaseActivity implements BottomNavigationView
         setTheme(R.style.AppTheme);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_popular_movies);
+        setContentView(R.layout.activity_movies_list);
 
         setupNavigationView();
 

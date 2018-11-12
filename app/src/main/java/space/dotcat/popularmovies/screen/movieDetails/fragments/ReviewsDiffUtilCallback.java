@@ -26,6 +26,6 @@ public class ReviewsDiffUtilCallback extends BaseDiffUtilCallback<Review> {
 
         Review newReview = getNewItem(newItemPosition);
 
-        return oldReview.getContent().length() == newReview.getContent().length(); // TODO
+        return oldReview.getContent().length() == newReview.getContent().length();
     }
 }

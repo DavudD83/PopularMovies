@@ -1,14 +1,11 @@
 package space.dotcat.popularmovies.screen.movies.fragments.ongoingMovies;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import space.dotcat.popularmovies.R;
-import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesFragment;
 import space.dotcat.popularmovies.screen.movies.fragments.BaseMoviesSwipeRefreshFragment;
 
 public class OngoingMoviesFragment extends BaseMoviesSwipeRefreshFragment<OngoingMoviesViewModel> {

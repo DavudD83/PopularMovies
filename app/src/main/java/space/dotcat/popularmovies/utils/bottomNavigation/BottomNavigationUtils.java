@@ -6,6 +6,8 @@ import android.support.design.widget.BottomNavigationView;
 
 import java.lang.reflect.Field;
 
+import timber.log.Timber;
+
 public class BottomNavigationUtils {
 
     public static void removeShiftMode(BottomNavigationView bottomNavigationView) {
@@ -25,9 +27,9 @@ public class BottomNavigationUtils {
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {
-            //TODO
+            Timber.i("Can not remove shift mode within bottomNavigationView");
         } catch (IllegalAccessException e) {
-           //TODO
+            Timber.i("Can not remove shift mode within bottomNavigationView");
         }
     }
 }

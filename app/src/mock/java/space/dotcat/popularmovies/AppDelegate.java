@@ -3,6 +3,8 @@ package space.dotcat.popularmovies;
 import android.app.Activity;
 import android.app.Application;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import javax.inject.Inject;
 
 import androidx.work.Worker;
@@ -13,6 +15,7 @@ import space.dotcat.popularmovies.di.appLayer.AppLayerComponent;
 import space.dotcat.popularmovies.di.appLayer.DaggerAppLayerComponent;
 import space.dotcat.popularmovies.di.workersInjection.HasWorkerInjector;
 import space.dotcat.popularmovies.scheduler.Scheduler;
+import timber.log.Timber;
 
 public class AppDelegate extends Application implements HasActivityInjector, HasWorkerInjector {
 
@@ -35,6 +38,14 @@ public class AppDelegate extends Application implements HasActivityInjector, Has
         buildAppComponent();
 
         mAppLayerComponent.inject(this);
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+
+        LeakCanary.install(this);
+
+        Timber.plant(new Timber.DebugTree());
     }
 
     private void buildAppComponent() {

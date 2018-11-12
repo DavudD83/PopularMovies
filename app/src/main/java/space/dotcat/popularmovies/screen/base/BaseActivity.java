@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import javax.inject.Inject;
 
@@ -17,10 +16,9 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import space.dotcat.popularmovies.R;
+import timber.log.Timber;
 
 public abstract class BaseActivity extends AppCompatActivity implements HasSupportFragmentInjector {
-
-    private static final String TAG = BaseActivity.class.getName();
 
     @Inject
     DispatchingAndroidInjector<Fragment> mFragmentDispatchingAndroidInjector;
@@ -64,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HasSuppo
 
     protected void onSetupActionBar() {
         if(mToolbar == null) {
-            Log.d(TAG, "Toolbar is null. Can not set action bar");
+            Timber.d("Toolbar is null. Can not set action bar");
             return;
         }
 
@@ -73,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HasSuppo
 
     protected void setToolbar(Toolbar toolbar) {
         if(toolbar == null) {
-            Log.d(TAG, "Toolbar is null. Can not set toolbar");
+            Timber.d("Toolbar is null. Can not set toolbar");
             return;
         }
 
@@ -83,9 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HasSuppo
     protected void addFragment(int containerId, Fragment fragment) {
         mFragmentManager.beginTransaction()
                 .replace(containerId, fragment)
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in,
-                        android.R.anim.fade_out)
-//                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                 .commit();
     }
 }

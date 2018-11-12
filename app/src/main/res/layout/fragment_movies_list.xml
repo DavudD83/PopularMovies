@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cl_wrapper_layout"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <include layout="@layout/content"
+        />
+
+    <include
+        android:id="@+id/includeLoading"
+        layout="@layout/loading_indicator"/>
+
+    <include
+        android:id="@+id/includeErrorMessage"
+        layout="@layout/empty_error_message"/>
+
+</android.support.constraint.ConstraintLayout>
