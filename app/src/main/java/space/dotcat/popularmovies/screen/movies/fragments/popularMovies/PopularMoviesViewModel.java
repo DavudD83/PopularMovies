@@ -3,7 +3,6 @@ package space.dotcat.popularmovies.screen.movies.fragments.popularMovies;
 import android.arch.lifecycle.MutableLiveData;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import space.dotcat.popularmovies.model.FlexInterval;
 import space.dotcat.popularmovies.model.Movie;

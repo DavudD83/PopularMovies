@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -128,7 +127,7 @@ public class MovieDetailsFragment extends BaseFragment<MovieDetailsViewModel> im
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_popular_movie_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -136,16 +135,8 @@ public class MovieDetailsFragment extends BaseFragment<MovieDetailsViewModel> im
 
         setupLoadingIndicator(mProgressBar);
 
-//        setupSwipeRefreshLayout();
-
         return view;
     }
-
-//    private void setupSwipeRefreshLayout() {
-//        mSwipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
-//
-//        mSwipeRefreshLayout.setOnRefreshListener(this);
-//    }
 
     @Override
     public void onResume() {

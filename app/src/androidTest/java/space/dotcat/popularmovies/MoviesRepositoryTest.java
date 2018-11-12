@@ -17,6 +17,7 @@ import space.dotcat.popularmovies.model.Review;
 import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
 import space.dotcat.popularmovies.repository.moviesRepository.localMoviesSource.MoviesDao;
 import space.dotcat.popularmovies.repository.moviesRepository.remoteMoviesSource.RemoteMoviesSourceImpl;
+import space.dotcat.popularmovies.scheduler.Scheduler;
 import space.dotcat.popularmovies.utils.TestUtils;
 
 import static junit.framework.Assert.assertEquals;
@@ -82,6 +83,7 @@ public class MoviesRepositoryTest {
         mMoviesDao.insertReviews(REVIEWS);
 
         mMoviesRepository.getTrailersAndReviews(TestUtils.UPCOMING_MOVIE_ID)
+                .subscribeOn(Schedulers.trampoline())
                 .test()
                 .assertValueCount(1)
                 .assertValue(info-> info.getReviewList().size() == 2 && info.getTrailer() == null)

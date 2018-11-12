@@ -77,7 +77,7 @@ public class RemoteSourceTest {
                 .test()
                 .assertNoErrors()
                 .assertValueCount(1)
-                .assertValue(video -> video.getType().equals(RemoteMoviesSourceImpl.TRAILER_VIDEO_TYPE));
+                .assertValue(video -> video.get(0).getType().equals(RemoteMoviesSourceImpl.TRAILER_VIDEO_TYPE));
     }
 
     @Test

@@ -1,12 +1,18 @@
 package space.dotcat.popularmovies.screen.movieDetails.activity;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,10 +53,19 @@ public class MovieDetailsActivity extends BaseActivity implements
     @BindView(R.id.srl_refresh_layout)
     public SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public static void start(@NonNull Activity context, int movieId) {
+    public static void start(@NonNull Activity context, int movieId, ImageView moviePoster) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
 
         intent.putExtra(EXTRA_MOVIE_ID_KEY, movieId);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(context, moviePoster,
+                            context.getString(R.string.movie_poster_transition_name));
+
+            ActivityCompat.startActivity(context, intent, options.toBundle());
+            return;
+        }
 
         context.startActivity(intent);
     }
@@ -58,6 +73,14 @@ public class MovieDetailsActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide transition = new Slide();
+            transition.excludeTarget(android.R.id.statusBarBackground, true);
+            getWindow().setEnterTransition(transition);
+            getWindow().setReturnTransition(transition);
+        }
+
         setContentView(R.layout.activity_movie_details);
 
         if (getSupportActionBar() != null) {

@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -64,7 +65,7 @@ public abstract class BaseMoviesFragment<VM extends BaseMoviesViewModel> extends
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_popular_movies, container, false);
+        View view = createView(inflater, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -120,10 +121,6 @@ public abstract class BaseMoviesFragment<VM extends BaseMoviesViewModel> extends
                 return true;
             }
 
-            case R.id.mi_settings: {
-
-            }
-
             default: {
                 return false;
             }
@@ -136,8 +133,12 @@ public abstract class BaseMoviesFragment<VM extends BaseMoviesViewModel> extends
     }
 
     @Override
-    public void onMovieClick(int movieId) {
-        MovieDetailsActivity.start(getActivity(), movieId);
+    public void onMovieClick(int movieId, ImageView moviePoster) {
+        MovieDetailsActivity.start(getActivity(), movieId, moviePoster);
+    }
+
+    protected View createView(LayoutInflater inflater, ViewGroup viewGroup, boolean attachToRoot) {
+        return inflater.inflate(R.layout.fragment_movies_list, viewGroup, attachToRoot);
     }
 
     protected abstract void setupErrorMessage();

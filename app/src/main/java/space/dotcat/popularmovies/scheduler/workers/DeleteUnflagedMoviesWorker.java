@@ -10,11 +10,10 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import space.dotcat.popularmovies.di.workersInjection.WorkerInjection;
 import space.dotcat.popularmovies.repository.moviesRepository.MoviesRepository;
+import timber.log.Timber;
 
 
 public class DeleteUnflagedMoviesWorker extends Worker {
-
-    private static final String TAG = DeleteUnflagedMoviesWorker.class.getName();
 
     @Inject
     MoviesRepository mMoviesRepository;
@@ -28,11 +27,11 @@ public class DeleteUnflagedMoviesWorker extends Worker {
     public Result doWork() {
         WorkerInjection.inject(this);
 
-        Log.i(TAG, "Starting deleting movies without flag");
+        Timber.i("Starting deleting movies without flag");
 
         int numberOfDeletedMovies = mMoviesRepository.deleteMoviesWithoutFlags();
 
-        Log.i(TAG, numberOfDeletedMovies + " movies has been deleted by worker.");
+        Timber.i("%s movies has been deleted by worker.", numberOfDeletedMovies);
 
         return Result.SUCCESS;
     }

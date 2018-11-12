@@ -59,4 +59,9 @@ public abstract class BaseMoviesSwipeRefreshFragment<VM extends BaseMoviesIntern
         mViewModel.reloadMovies();
         mSwipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    protected View createView(LayoutInflater inflater, ViewGroup viewGroup, boolean attachToRoot) {
+        return inflater.inflate(R.layout.fragment_movies_list_with_swipe, viewGroup, attachToRoot);
+    }
 }

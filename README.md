@@ -1,2 +1,2 @@
-# PopularMovies
-Mobile app for viewing popular movies
+# MovieDiscover
+Mobile app for viewing different kind of movies

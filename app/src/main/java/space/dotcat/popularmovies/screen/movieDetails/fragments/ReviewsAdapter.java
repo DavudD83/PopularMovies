@@ -21,7 +21,10 @@ public class ReviewsAdapter extends BaseRecyclerAdapter<Review, ReviewViewHolder
 
         View view = layoutInflater.inflate(R.layout.review_item, parent, false);
 
-        return new ReviewViewHolder(view);
+        ReviewViewHolder reviewViewHolder =  new ReviewViewHolder(view);
+        reviewViewHolder.mReviewContent.setOnClickListener(v-> reviewViewHolder.handleClickOnTextView());
+
+        return reviewViewHolder;
     }
 
     @Override
