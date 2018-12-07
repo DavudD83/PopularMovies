@@ -150,6 +150,8 @@ public class MovieDetailsFragment extends BaseFragment<MovieDetailsViewModel> im
             if (error.getErrorCode() == MovieDetailsViewModel.LOADING_ERROR) {
                 showToast(getString(R.string.error_loading_reviews_trailer), Toast.LENGTH_SHORT);
 
+                error.resetError();
+
                 return;
             }
 
